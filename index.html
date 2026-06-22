@@ -3,182 +3,158 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Zolve — Passwordless QA Dashboard</title>
+<title>Zolve — Passwordless V5 QA Dashboard</title>
 <style>
 :root{
   --black:#1A1A1A;--ink:#2C2C2C;--charcoal:#4A4A4A;--mid:#7A7A7A;
-  --silver:#A5A5A5;--dust:#C8C4BB;--bone:#E8E4DC;--linen:#F2EFE9;
-  --paper:#F8F6F2;--white:#FFFFFF;
+  --silver:#A5A5A5;--bone:#E8E4DC;--linen:#F2EFE9;--paper:#F8F6F2;--white:#FFFFFF;
   --red:#B03A2E;--red2:#F9EDEC;--amber:#8A5A00;--amber2:#FBF5E6;
   --green:#2D6A4F;--green2:#EAF3EE;--blue:#1D4E89;--blue2:#EBF2FB;
   --pass:#2D6A4F;--fail:#B03A2E;--na:#7A7A7A;
   --brd:#E2DDD6;--brd2:#CCC8C0;
-  --r:6px;--r2:10px;--sh2:0 2px 18px rgba(0,0,0,.09);
+  --r:6px;--r2:10px;--sh:0 2px 18px rgba(0,0,0,.09);
   --brand:#4B3B8C;--brand2:#7C5CBF;--brand-light:#EEEAF8;
-  --crit:#B03A2E;--crit2:#F9EDEC;
-  --high:#8A5A00;--high2:#FBF5E6;
-  --med:#1D4E89;--med2:#EBF2FB;
-  --low:#2D6A4F;--low2:#EAF3EE;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,-apple-system,Arial,sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:'Segoe UI',system-ui,Arial,sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
 
 /* HEADER */
-.hdr{background:var(--black);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border-bottom:1px solid #333}
+.hdr{background:var(--black);padding:18px 40px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border-bottom:1px solid #333}
 .hdr-brand{display:flex;align-items:center;gap:12px}
-.hdr-logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#4B3B8C,#7C5CBF);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;letter-spacing:-1px;flex-shrink:0}
-.hdr h1{color:var(--white);font-size:1.05rem;font-weight:600;letter-spacing:-.2px}
+.hdr-logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#4B3B8C,#7C5CBF);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0}
+.hdr h1{color:#fff;font-size:1.05rem;font-weight:600;letter-spacing:-.2px}
 .hdr p{color:var(--silver);font-size:.72rem;margin-top:2px}
 .hdr-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.sync-pill{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.07);color:var(--silver);padding:5px 13px;border-radius:20px;font-size:.7rem;font-weight:500;border:1px solid rgba(255,255,255,.12);white-space:nowrap}
-.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sync-pill{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.07);color:var(--silver);padding:5px 13px;border-radius:20px;font-size:.7rem;font-weight:500;border:1px solid rgba(255,255,255,.12)}
+.dot{width:7px;height:7px;border-radius:50%}
 .dot.loading{background:#FCD34D;animation:blink .9s ease-in-out infinite}
 .dot.error{background:#F87171}
 .dot.live{background:#6EE7B7;animation:glow 2.5s ease-in-out infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 @keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(110,231,183,.4)}60%{box-shadow:0 0 0 4px rgba(110,231,183,.1)}}
 .refresh-btn{background:rgba(255,255,255,.08);color:var(--silver);border:1px solid rgba(255,255,255,.14);padding:5px 13px;border-radius:20px;font-size:.7rem;font-weight:500;cursor:pointer;transition:all .15s}
-.refresh-btn:hover{background:rgba(255,255,255,.14);color:var(--white)}
-#last-sync{color:rgba(255,255,255,.35);font-size:.68rem;white-space:nowrap}
+.refresh-btn:hover{background:rgba(255,255,255,.14);color:#fff}
+#last-sync{color:rgba(255,255,255,.35);font-size:.68rem}
 
 /* KPI BAR */
 .kpi-bar{display:flex;gap:1px;background:var(--brd);border-bottom:1px solid var(--brd)}
-.kpi{background:var(--white);padding:18px 24px;flex:1;min-width:110px;display:flex;flex-direction:column;gap:5px;transition:background .15s;border-top:3px solid transparent}
+.kpi{background:#fff;padding:16px 22px;flex:1;min-width:100px;display:flex;flex-direction:column;gap:4px;border-top:3px solid transparent;transition:background .15s}
 .kpi:hover{background:var(--linen)}
-.kpi.k-total{border-color:var(--brand)}.kpi.k-pass{border-color:var(--pass)}.kpi.k-fail{border-color:var(--fail)}.kpi.k-na{border-color:var(--na)}.kpi.k-prog{border-color:var(--blue)}.kpi.k-crit{border-color:var(--crit)}.kpi.k-high{border-color:var(--high)}
-.kn{font-size:1.9rem;font-weight:700;line-height:1;color:var(--black);letter-spacing:-.5px;font-variant-numeric:tabular-nums}
-.kl{font-size:.67rem;color:var(--mid);text-transform:uppercase;letter-spacing:.8px;font-weight:500}
-.kpi.k-total .kn{color:var(--brand)}.kpi.k-pass .kn{color:var(--pass)}.kpi.k-fail .kn{color:var(--fail)}.kpi.k-na .kn{color:var(--na)}.kpi.k-prog .kn{color:var(--blue)}.kpi.k-crit .kn{color:var(--crit)}.kpi.k-high .kn{color:var(--high)}
+.kpi.k-total{border-color:var(--brand)} .kpi.k-pass{border-color:var(--pass)} .kpi.k-fail{border-color:var(--fail)}
+.kpi.k-na{border-color:var(--na)}       .kpi.k-prog{border-color:var(--blue)} .kpi.k-crit{border-color:var(--red)}
+.kpi.k-high{border-color:var(--amber)}
+.kn{font-size:1.85rem;font-weight:700;line-height:1;letter-spacing:-.5px;font-variant-numeric:tabular-nums;color:var(--black)}
+.kl{font-size:.66rem;color:var(--mid);text-transform:uppercase;letter-spacing:.8px;font-weight:500}
+.kpi.k-total .kn{color:var(--brand)} .kpi.k-pass .kn{color:var(--pass)} .kpi.k-fail .kn{color:var(--fail)}
+.kpi.k-na .kn{color:var(--na)}       .kpi.k-prog .kn{color:var(--blue)} .kpi.k-crit .kn{color:var(--red)}
+.kpi.k-high .kn{color:var(--amber)}
 
-/* TAB BAR */
-.tab-bar{display:flex;padding:0 40px;gap:0;overflow-x:auto;background:var(--linen);border-bottom:1px solid var(--brd);scrollbar-width:none}
+/* TABS */
+.tab-bar{display:flex;padding:0 40px;overflow-x:auto;background:var(--linen);border-bottom:1px solid var(--brd);scrollbar-width:none}
 .tab-bar::-webkit-scrollbar{display:none}
-.tab{padding:12px 15px;cursor:pointer;font-size:.75rem;font-weight:500;color:var(--mid);background:transparent;border:none;border-bottom:2px solid transparent;transition:all .15s;user-select:none;white-space:nowrap;flex-shrink:0}
+.tab{padding:11px 14px;cursor:pointer;font-size:.75rem;font-weight:500;color:var(--mid);background:transparent;border:none;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;user-select:none}
 .tab:hover{color:var(--ink);background:var(--bone)}
-.tab.active{color:var(--brand);border-bottom-color:var(--brand);font-weight:600;background:var(--white)}
-.tab-badge{display:inline-block;background:var(--bone);color:var(--charcoal);border-radius:20px;padding:1px 7px;font-size:.62rem;margin-left:5px;font-weight:600}
-.tab.active .tab-badge{background:var(--brand);color:var(--white)}
+.tab.active{color:var(--brand);border-bottom-color:var(--brand);font-weight:600;background:#fff}
+.tab-badge{display:inline-block;background:var(--bone);color:var(--charcoal);border-radius:20px;padding:1px 7px;font-size:.61rem;margin-left:4px;font-weight:600}
+.tab.active .tab-badge{background:var(--brand);color:#fff}
 
 /* CONTENT */
-.content{background:var(--white);margin:0 40px 40px;border-radius:0 0 var(--r2) var(--r2);box-shadow:var(--sh2);border:1px solid var(--brd);border-top:3px solid var(--brand);overflow:hidden;min-height:360px}
+.content{background:#fff;margin:0 40px 40px;border-radius:0 0 var(--r2) var(--r2);box-shadow:var(--sh);border:1px solid var(--brd);border-top:3px solid var(--brand);overflow:hidden;min-height:360px}
 .pane{display:none}.pane.active{display:block}
 
 /* FILTER BAR */
-.fb{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--brd);flex-wrap:wrap;background:var(--brand-light)}
-.fb label{font-size:.69rem;font-weight:600;color:var(--brand);text-transform:uppercase;letter-spacing:.5px}
-.fb select,.fb input{padding:5px 10px;border:1px solid var(--brd);border-radius:var(--r);font-size:.74rem;background:var(--white);color:var(--ink);outline:none;transition:border .15s;font-family:inherit}
+.fb{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--brd);flex-wrap:wrap;background:var(--brand-light)}
+.fb label{font-size:.68rem;font-weight:600;color:var(--brand);text-transform:uppercase;letter-spacing:.5px}
+.fb select,.fb input{padding:5px 9px;border:1px solid var(--brd);border-radius:var(--r);font-size:.73rem;background:#fff;color:var(--ink);outline:none;font-family:inherit}
 .fb select:focus,.fb input:focus{border-color:var(--brand)}
-.fb input{min-width:190px}
-.fc{margin-left:auto;font-size:.7rem;color:var(--silver);font-style:italic}
+.fb input{min-width:180px}
+.fc{margin-left:auto;font-size:.69rem;color:var(--silver);font-style:italic;white-space:nowrap}
 
 /* TABLE */
 .tbl-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:.78rem}
-thead tr{background:var(--black)}
-thead th{color:var(--white);font-weight:500;padding:10px 13px;text-align:left;white-space:nowrap;font-size:.68rem;text-transform:uppercase;letter-spacing:.6px}
-tbody td{padding:10px 13px;border-bottom:1px solid var(--linen);vertical-align:top;line-height:1.55}
+table{width:100%;border-collapse:collapse;font-size:.77rem}
+thead th{background:var(--black);color:#fff;font-weight:500;padding:9px 12px;text-align:left;white-space:nowrap;font-size:.67rem;text-transform:uppercase;letter-spacing:.6px}
+tbody td{padding:10px 12px;border-bottom:1px solid var(--linen);vertical-align:top;line-height:1.55}
 tbody tr:hover{background:var(--paper)!important}
-.tc-id{font-family:'Courier New',monospace;font-weight:700;color:var(--brand);font-size:.72rem;white-space:nowrap}
-.steps{white-space:pre-line;font-size:.72rem;color:var(--charcoal);line-height:1.6}
-.exp{font-size:.72rem;color:#1E4D35;line-height:1.55}
-.db-note{font-size:.68rem;color:var(--mid);font-style:italic;white-space:pre-line;line-height:1.5}
+.tc-id{font-family:'Courier New',monospace;font-weight:700;color:var(--brand);font-size:.71rem;white-space:nowrap}
+.steps{white-space:pre-line;font-size:.71rem;color:var(--charcoal);line-height:1.6}
+.exp{font-size:.71rem;color:#1E4D35;line-height:1.55}
+.dbnote{font-size:.67rem;color:var(--mid);font-style:italic;white-space:pre-line;line-height:1.5}
 
-/* PRIORITY BADGES */
-.pri-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.64rem;font-weight:600;white-space:nowrap}
-.p-crit{background:var(--crit2);color:var(--crit);border:1px solid #DBA9A5}
-.p-high{background:var(--high2);color:var(--high);border:1px solid #D4B87A}
-.p-med{background:var(--med2);color:var(--med);border:1px solid #BDD4EE}
-.p-low{background:var(--low2);color:var(--low);border:1px solid #A8CFB8}
-
-/* CATEGORY BADGES */
-.cat-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.62rem;font-weight:600;white-space:nowrap}
-.cat-happy{background:#EAF3EE;color:#2D6A4F;border:1px solid #A8CFB8}
-.cat-otp{background:#EBF2FB;color:#1D4E89;border:1px solid #BDD4EE}
-.cat-sec{background:#F9EDEC;color:#B03A2E;border:1px solid #DBA9A5}
-.cat-edge{background:#FBF5E6;color:#8A5A00;border:1px solid #D4B87A}
-.cat-val{background:#EEEAF8;color:#4B3B8C;border:1px solid #C9BEF0}
-.cat-flow{background:#E6F4F1;color:#0F6B5C;border:1px solid #9DD6CC}
-.cat-reg{background:#F3E8FF;color:#6B21A8;border:1px solid #D8B4FE}
-.cat-mig{background:#FEF9E7;color:#7D5A00;border:1px solid #F0D580}
-.cat-ui{background:#F8F6F2;color:#4A4A4A;border:1px solid #CCC8C0}
-
-/* STATUS BADGE */
-.status-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.65rem;font-weight:600;white-space:nowrap;letter-spacing:.3px;text-transform:uppercase}
+/* BADGES */
+.pri{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.63rem;font-weight:600;white-space:nowrap}
+.p-crit{background:var(--red2);color:var(--red);border:1px solid #DBA9A5}
+.p-high{background:var(--amber2);color:var(--amber);border:1px solid #D4B87A}
+.p-med{background:var(--blue2);color:var(--blue);border:1px solid #BDD4EE}
+.p-low{background:var(--green2);color:var(--pass);border:1px solid #A8CFB8}
+.cat{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.61rem;font-weight:600;white-space:nowrap}
+.c-happy{background:#EAF3EE;color:#2D6A4F;border:1px solid #A8CFB8}
+.c-otp{background:#EBF2FB;color:#1D4E89;border:1px solid #BDD4EE}
+.c-sec{background:#F9EDEC;color:#B03A2E;border:1px solid #DBA9A5}
+.c-edge{background:#FBF5E6;color:#8A5A00;border:1px solid #D4B87A}
+.c-val{background:#EEEAF8;color:#4B3B8C;border:1px solid #C9BEF0}
+.c-flow{background:#E6F4F1;color:#0F6B5C;border:1px solid #9DD6CC}
+.c-reg{background:#F3E8FF;color:#6B21A8;border:1px solid #D8B4FE}
+.c-mig{background:#FEF9E7;color:#7D5A00;border:1px solid #F0D580}
+.c-ui{background:#F8F6F2;color:#4A4A4A;border:1px solid #CCC8C0}
+.status-badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:.64rem;font-weight:600;white-space:nowrap;text-transform:uppercase;letter-spacing:.3px}
 .s-pass{background:var(--green2);color:var(--pass);border:1px solid #A8CFB8}
 .s-fail{background:var(--red2);color:var(--fail);border:1px solid #DBA9A5}
 .s-na{background:var(--linen);color:var(--na);border:1px solid var(--brd2)}
 
-/* SECTION BADGE */
-.sec-badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.62rem;font-weight:600;white-space:nowrap;border:1px solid var(--brd2);background:var(--brand-light);color:var(--brand)}
-
 /* SUMMARY */
-.sw{padding:28px 32px}
-.sw-hdr{display:flex;align-items:baseline;gap:16px;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--brd);flex-wrap:wrap}
-.sw-hdr h2{font-size:1rem;font-weight:600;color:var(--black);letter-spacing:-.2px}
-.sw-hdr span{font-size:.72rem;color:var(--silver)}
-.sum-t{width:100%;border-collapse:collapse;font-size:.8rem}
-.sum-t thead tr{background:var(--black)}
-.sum-t thead th{color:var(--white);padding:10px 14px;text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.6px;font-weight:500}
-.sum-t tbody td{padding:11px 14px;border-bottom:1px solid var(--linen);color:var(--ink)}
-.sum-t tbody tr:nth-child(odd){background:var(--white)}
+.sw{padding:26px 30px}
+.sw-hdr{display:flex;align-items:baseline;gap:14px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--brd);flex-wrap:wrap}
+.sw-hdr h2{font-size:.98rem;font-weight:600;color:var(--black)}
+.sw-hdr span{font-size:.71rem;color:var(--silver)}
+.sum-t{width:100%;border-collapse:collapse;font-size:.79rem}
+.sum-t thead th{background:var(--black);color:#fff;padding:9px 13px;text-align:left;font-size:.67rem;text-transform:uppercase;letter-spacing:.6px;font-weight:500}
+.sum-t tbody td{padding:10px 13px;border-bottom:1px solid var(--linen)}
+.sum-t tbody tr:nth-child(odd){background:#fff}
 .sum-t tbody tr:nth-child(even){background:var(--paper)}
 .sum-t tbody tr:hover{background:var(--linen)}
-.sum-t .tr-total td{background:var(--black);color:var(--white);font-weight:600}
-
-/* PROGRESS BAR */
+.sum-t .tr-total td{background:var(--black);color:#fff;font-weight:600}
 .pb{display:flex;align-items:center;gap:8px}
-.pbr{height:6px;border-radius:3px;background:var(--bone);flex:1;overflow:hidden;min-width:100px;position:relative}
-.pbf{height:100%;position:absolute;top:0;left:0;transition:width .6s ease}
-.pbf-pass{background:var(--pass)}.pbf-fail{background:var(--fail)}.pbf-na{background:var(--na)}.pbf-brand{background:var(--brand)}
-.pb-text{font-size:.69rem;color:var(--mid);min-width:70px;font-weight:500;font-variant-numeric:tabular-nums}
-
-/* LEGEND */
-.legend{margin-top:26px;padding-top:20px;border-top:1px solid var(--brd);display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.legend-lbl{font-size:.7rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.5px;margin-right:4px}
-.legend-item{display:flex;align-items:center;gap:7px;background:var(--paper);border:1px solid var(--brd);padding:6px 12px;border-radius:var(--r);font-size:.74rem}
-.ldot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.pbr{height:6px;border-radius:3px;background:var(--bone);flex:1;overflow:hidden;min-width:90px;position:relative}
+.pbf{height:100%;position:absolute;top:0;left:0}
+.pbf-p{background:var(--pass)}.pbf-f{background:var(--fail)}.pbf-n{background:var(--na)}
+.pb-txt{font-size:.68rem;color:var(--mid);min-width:62px;font-weight:500;font-variant-numeric:tabular-nums}
+.legend{margin-top:22px;padding-top:18px;border-top:1px solid var(--brd);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.legend-lbl{font-size:.69rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.5px;margin-right:3px}
+.legend-item{display:flex;align-items:center;gap:6px;background:var(--paper);border:1px solid var(--brd);padding:5px 10px;border-radius:var(--r);font-size:.72rem}
+.ldot{width:8px;height:8px;border-radius:50%}
 
 /* LOADING / ERROR */
-.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;gap:14px;color:var(--silver)}
-.spinner{width:30px;height:30px;border:2px solid var(--bone);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite}
+.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:70px 20px;gap:12px;color:var(--silver)}
+.spinner{width:28px;height:28px;border:2px solid var(--bone);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-wrap p{font-size:.8rem}
-.err-box{margin:28px;padding:18px 22px;background:var(--red2);border:1px solid #ECC5C2;border-radius:var(--r);border-left:3px solid var(--red)}
-.err-box h3{color:var(--red);font-size:.85rem;margin-bottom:7px;font-weight:600}
-.err-box p{font-size:.78rem;color:#7B2A23;line-height:1.7}
-
-/* SETUP BOX */
-.setup-box{margin:28px;padding:18px 20px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;border-left:4px solid #F59E0B}
-.setup-box h3{font-size:.85rem;font-weight:600;color:#92400E;margin-bottom:10px}
-.setup-box ol{margin-left:18px;line-height:2;font-size:.78rem;color:#78350F}
-.setup-box code{background:#FEF3C7;padding:1px 6px;border-radius:4px;font-family:monospace;font-size:.72rem}
-
-/* LOAD STATUS */
-.load-status{margin:24px 32px;display:flex;flex-direction:column;gap:10px}
-.ls-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:8px;background:var(--linen);border:1px solid var(--brd);font-size:.8rem}
-.ls-icon{width:18px;height:18px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px}
+.loading-wrap p{font-size:.79rem}
+.err-box{margin:26px;padding:16px 20px;background:var(--red2);border:1px solid #ECC5C2;border-radius:var(--r);border-left:3px solid var(--red)}
+.err-box h3{color:var(--red);font-size:.84rem;margin-bottom:6px;font-weight:600}
+.err-box pre{font-size:.69rem;color:#7B2A23;white-space:pre-wrap;word-break:break-word;margin-top:8px;line-height:1.6}
+.load-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin:20px 28px}
+.ls-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:7px;background:var(--linen);border:1px solid var(--brd);font-size:.77rem}
+.ls-icon{width:16px;height:16px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px}
 .ls-icon.spinning{border:2px solid var(--bone);border-top-color:var(--brand);animation:spin .7s linear infinite}
 .ls-icon.ok{background:var(--green2);color:var(--pass)}
 .ls-icon.err{background:var(--red2);color:var(--red)}
-.ls-name{font-weight:600;color:var(--ink);min-width:200px}
-.ls-msg{color:var(--mid);font-size:.74rem;flex:1}
-.ls-msg.error{color:var(--red);white-space:pre-wrap;word-break:break-word}
+.ls-name{font-weight:600;color:var(--ink);flex:1;font-size:.73rem}
+.ls-msg{color:var(--mid);font-size:.69rem}
+.ls-msg.error{color:var(--red)}
 
-/* RESPONSIVE */
 @media(max-width:860px){
-  .hdr,.tab-bar{padding-left:16px;padding-right:16px}
+  .hdr,.tab-bar{padding-left:14px;padding-right:14px}
   .content{margin-left:0;margin-right:0}
-  .sw{padding:18px 16px}
-  .kpi{min-width:90px;padding:14px 16px}
+  .sw{padding:16px 14px}
+  .kpi{min-width:80px;padding:12px 14px}
 }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="hdr">
   <div class="hdr-brand">
-    <img src="tejas.png" class="hdr-logo" alt="Zolve"/>
+    <div class="hdr-logo">Z</div>
     <div>
       <h1>Zolve — Passwordless V5 QA Dashboard</h1>
       <p>Live sync from Google Sheets &nbsp;·&nbsp; Auto-refreshes every 60 s</p>
@@ -189,12 +165,11 @@ tbody tr:hover{background:var(--paper)!important}
     <button class="refresh-btn" onclick="loadAll()">&#8635; Refresh</button>
     <div class="sync-pill">
       <div class="dot loading" id="sync-dot"></div>
-      <span id="sync-lbl">Loading&#8230;</span>
+      <span id="sync-lbl">Loading…</span>
     </div>
   </div>
 </div>
 
-<!-- KPI BAR -->
 <div class="kpi-bar">
   <div class="kpi k-total"><div class="kn" id="k-total">—</div><div class="kl">Total TCs</div></div>
   <div class="kpi k-pass"> <div class="kn" id="k-pass">—</div> <div class="kl">✓ Passed</div></div>
@@ -205,9 +180,8 @@ tbody tr:hover{background:var(--paper)!important}
   <div class="kpi k-high"> <div class="kn" id="k-high">—</div> <div class="kl">🟠 High</div></div>
 </div>
 
-<!-- TAB BAR -->
-<div class="tab-bar" id="tabbar-main">
-  <div class="tab active"  onclick="showTab(this,'summary')">Summary</div>
+<div class="tab-bar">
+  <div class="tab active" onclick="showTab(this,'summary')">Summary</div>
   <div class="tab" onclick="showTab(this,'ps')">Phone Signup <span class="tab-badge" id="tb-ps">—</span></div>
   <div class="tab" onclick="showTab(this,'pl')">Phone Login <span class="tab-badge" id="tb-pl">—</span></div>
   <div class="tab" onclick="showTab(this,'el')">Email Linking <span class="tab-badge" id="tb-el">—</span></div>
@@ -217,96 +191,84 @@ tbody tr:hover{background:var(--paper)!important}
   <div class="tab" onclick="showTab(this,'sc')">Security <span class="tab-badge" id="tb-sc">—</span></div>
   <div class="tab" onclick="showTab(this,'ux')">UI / UX <span class="tab-badge" id="tb-ux">—</span></div>
   <div class="tab" onclick="showTab(this,'ar')">Auth OTP Resend <span class="tab-badge" id="tb-ar">—</span></div>
-  <div class="tab" onclick="showTab(this,'all')">All Tests <span class="tab-badge" id="tb-all">—</span></div>
 </div>
 
-<!-- CONTENT -->
 <div class="content">
 
-  <!-- SUMMARY PANE -->
   <div class="pane active" id="pane-summary">
     <div class="sw">
-      <div class="sw-hdr">
-        <h2>Test Execution Summary — Passwordless V5</h2>
-        <span id="sum-ts">Fetching&#8230;</span>
-      </div>
+      <div class="sw-hdr"><h2>Test Execution Summary — Passwordless V5</h2><span id="sum-ts">Loading…</span></div>
       <div id="sum-area">
-        <div class="setup-box" id="setup-instructions">
-          <h3>⚡ Connect your Google Sheet</h3>
-          <ol>
-            <li>Open your Google Sheet → <strong>File → Share → Publish to web</strong></li>
-            <li>Select the <code>Test Cases</code> tab → <code>Comma-separated values (.csv)</code> → click <strong>Publish</strong></li>
-            <li>Wait 30 seconds, then click <strong>Refresh</strong> in the top-right</li>
-          </ol>
-        </div>
-        <div class="load-status">
-          <div class="ls-row"><div class="ls-icon spinning" id="ls-icon"></div><span class="ls-name">Passwordless Test Cases</span><span class="ls-msg" id="ls-msg">Connecting…</span></div>
-        </div>
-        <div class="loading-wrap" id="initial-spinner"><div class="spinner"></div><p>Loading from Google Sheets…</p></div>
+        <div class="load-grid" id="load-grid"></div>
+        <div class="loading-wrap" id="init-spinner"><div class="spinner"></div><p>Connecting to Google Sheets…</p></div>
       </div>
     </div>
   </div>
 
-  <!-- SECTION PANES (filter + table) -->
   <div class="pane" id="pane-ps">
-    <div class="fb"><label>Status:</label><select id="f-ps-s" onchange="applyFilter('ps')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-ps-p" onchange="applyFilter('ps')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><label>Category:</label><select id="f-ps-c" onchange="applyFilter('ps')"><option value="">All</option></select><input id="f-ps-q" type="text" placeholder="Search…" oninput="applyFilter('ps')"/><span class="fc" id="c-ps"></span></div>
-    <div class="tbl-wrap" id="wrap-ps"><div class="loading-wrap"><div class="spinner"></div><p>Loading…</p></div></div>
+    <div class="fb"><label>Status:</label><select id="f-ps-s" onchange="applyFilter('ps')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-ps-p" onchange="applyFilter('ps')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><label>Category:</label><select id="f-ps-c" onchange="applyFilter('ps')"><option value="">All</option><option value="happy path">Happy Path</option><option value="otp handling">OTP Handling</option></select><input id="f-ps-q" placeholder="Search…" oninput="applyFilter('ps')"/><span class="fc" id="c-ps"></span></div>
+    <div class="tbl-wrap" id="wrap-ps"></div>
   </div>
 
   <div class="pane" id="pane-pl">
-    <div class="fb"><label>Status:</label><select id="f-pl-s" onchange="applyFilter('pl')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-pl-p" onchange="applyFilter('pl')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-pl-q" type="text" placeholder="Search…" oninput="applyFilter('pl')"/><span class="fc" id="c-pl"></span></div>
+    <div class="fb"><label>Status:</label><select id="f-pl-s" onchange="applyFilter('pl')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-pl-p" onchange="applyFilter('pl')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-pl-q" placeholder="Search…" oninput="applyFilter('pl')"/><span class="fc" id="c-pl"></span></div>
     <div class="tbl-wrap" id="wrap-pl"></div>
   </div>
 
   <div class="pane" id="pane-el">
-    <div class="fb"><label>Status:</label><select id="f-el-s" onchange="applyFilter('el')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-el-p" onchange="applyFilter('el')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-el-q" type="text" placeholder="Search…" oninput="applyFilter('el')"/><span class="fc" id="c-el"></span></div>
+    <div class="fb"><label>Status:</label><select id="f-el-s" onchange="applyFilter('el')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-el-p" onchange="applyFilter('el')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-el-q" placeholder="Search…" oninput="applyFilter('el')"/><span class="fc" id="c-el"></span></div>
     <div class="tbl-wrap" id="wrap-el"></div>
   </div>
 
   <div class="pane" id="pane-pw">
-    <div class="fb"><label>Status:</label><select id="f-pw-s" onchange="applyFilter('pw')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-pw-p" onchange="applyFilter('pw')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-pw-q" type="text" placeholder="Search…" oninput="applyFilter('pw')"/><span class="fc" id="c-pw"></span></div>
+    <div class="fb"><label>Status:</label><select id="f-pw-s" onchange="applyFilter('pw')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-pw-p" onchange="applyFilter('pw')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-pw-q" placeholder="Search…" oninput="applyFilter('pw')"/><span class="fc" id="c-pw"></span></div>
     <div class="tbl-wrap" id="wrap-pw"></div>
   </div>
 
   <div class="pane" id="pane-mg">
-    <div class="fb"><label>Status:</label><select id="f-mg-s" onchange="applyFilter('mg')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-mg-p" onchange="applyFilter('mg')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-mg-q" type="text" placeholder="Search…" oninput="applyFilter('mg')"/><span class="fc" id="c-mg"></span></div>
+    <div class="fb"><label>Status:</label><select id="f-mg-s" onchange="applyFilter('mg')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-mg-p" onchange="applyFilter('mg')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-mg-q" placeholder="Search…" oninput="applyFilter('mg')"/><span class="fc" id="c-mg"></span></div>
     <div class="tbl-wrap" id="wrap-mg"></div>
   </div>
 
   <div class="pane" id="pane-da">
-    <div class="fb"><label>Status:</label><select id="f-da-s" onchange="applyFilter('da')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-da-p" onchange="applyFilter('da')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-da-q" type="text" placeholder="Search…" oninput="applyFilter('da')"/><span class="fc" id="c-da"></span></div>
+    <div class="fb"><label>Status:</label><select id="f-da-s" onchange="applyFilter('da')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-da-p" onchange="applyFilter('da')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-da-q" placeholder="Search…" oninput="applyFilter('da')"/><span class="fc" id="c-da"></span></div>
     <div class="tbl-wrap" id="wrap-da"></div>
   </div>
 
   <div class="pane" id="pane-sc">
-    <div class="fb"><label>Status:</label><select id="f-sc-s" onchange="applyFilter('sc')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-sc-p" onchange="applyFilter('sc')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-sc-q" type="text" placeholder="Search…" oninput="applyFilter('sc')"/><span class="fc" id="c-sc"></span></div>
+    <div class="fb"><label>Status:</label><select id="f-sc-s" onchange="applyFilter('sc')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-sc-p" onchange="applyFilter('sc')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-sc-q" placeholder="Search…" oninput="applyFilter('sc')"/><span class="fc" id="c-sc"></span></div>
     <div class="tbl-wrap" id="wrap-sc"></div>
   </div>
 
   <div class="pane" id="pane-ux">
-    <div class="fb"><label>Status:</label><select id="f-ux-s" onchange="applyFilter('ux')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-ux-p" onchange="applyFilter('ux')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-ux-q" type="text" placeholder="Search…" oninput="applyFilter('ux')"/><span class="fc" id="c-ux"></span></div>
+    <div class="fb"><label>Status:</label><select id="f-ux-s" onchange="applyFilter('ux')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-ux-p" onchange="applyFilter('ux')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-ux-q" placeholder="Search…" oninput="applyFilter('ux')"/><span class="fc" id="c-ux"></span></div>
     <div class="tbl-wrap" id="wrap-ux"></div>
   </div>
 
   <div class="pane" id="pane-ar">
-    <div class="fb"><label>Status:</label><select id="f-ar-s" onchange="applyFilter('ar')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-ar-p" onchange="applyFilter('ar')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-ar-q" type="text" placeholder="Search…" oninput="applyFilter('ar')"/><span class="fc" id="c-ar"></span></div>
+    <div class="fb"><label>Status:</label><select id="f-ar-s" onchange="applyFilter('ar')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-ar-p" onchange="applyFilter('ar')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-ar-q" placeholder="Search…" oninput="applyFilter('ar')"/><span class="fc" id="c-ar"></span></div>
     <div class="tbl-wrap" id="wrap-ar"></div>
-  </div>
-
-  <div class="pane" id="pane-all">
-    <div class="fb"><label>Status:</label><select id="f-all-s" onchange="applyFilter('all')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-all-p" onchange="applyFilter('all')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><label>Section:</label><select id="f-all-sec" onchange="applyFilter('all')"><option value="">All</option><option value="phone signup">Phone Signup</option><option value="phone login">Phone Login</option><option value="email linking">Email Linking</option><option value="password setup">Password Setup</option><option value="migration">Migration</option><option value="decision api">Decision API</option><option value="security">Security</option><option value="ui / ux">UI / UX</option><option value="auth otp resend">Auth OTP Resend</option></select><input id="f-all-q" type="text" placeholder="Search…" oninput="applyFilter('all')"/><span class="fc" id="c-all"></span></div>
-    <div class="tbl-wrap" id="wrap-all"></div>
   </div>
 
 </div>
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────────────────────────
-// Published CSV URL (single sheet)
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRaeN0rdr5miIf_l2zjwt0zH_9XJPMlmOIrVMkvwi5CQjiBk4hOpNxgvJO-64dlfgyE85CiSXXg7SPr/pub?output=csv';
-// Also try via gviz (more reliable, no CORS issues)
-const SHEET_ID = '13rzZOUDeUNwCOmc216w0TRDeWVfUZ9VItbVRm6pJdqw';
-const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Test%20Cases`;
+// ── CONFIG ─────────────────────────────────────────────────────────────────────
+const PUB  = '2PACX-1vShtBY3xjXKFKYdPjDo0CiZ4WU9BsV8RFhHbS-dzynZrqjtwU2qosBH8_DvfGN4mnuQyzD-UNwunztF';
+const SID  = '16AeBt2K2LYjwdddum46rI2d-cGvT26gfFYBfWi9B5us';
+
+// Each section: key, tab label, sheet GID, sheet name for gviz fallback
+const SHEETS = [
+  {key:'ps', label:'Phone Signup (New User)',       gid:'51911004',   name:'Phone Signup (New User)',       desc:'New user phone OTP signup, resend & rate limits'},
+  {key:'pl', label:'Phone Login (Existing User)',   gid:'784941435',  name:'Phone Login (Existing User)',   desc:'Existing user phone OTP login, path differentiation'},
+  {key:'el', label:'Email Linking (Post-Signup)',   gid:'116640341',  name:'Email Linking (Post-Signup)',   desc:'Post-signup email / social identity linking'},
+  {key:'pw', label:'Password Setup',                gid:'1139865990', name:'Password Setup',                desc:'Password creation, validation rules, edge cases'},
+  {key:'mg', label:'Migration - Old Users',         gid:'1851726893', name:'Migration - Old Users',         desc:'Old user migration, legacy flow regression'},
+  {key:'da', label:'Decision API + Flow Control',   gid:'1347584169', name:'Decision API + Flow Control',   desc:'Flow control, drop-off recovery'},
+  {key:'sc', label:'Security',                      gid:'1632613336', name:'Security',                      desc:'Blacklists, VOIP, country blocks, expired tokens'},
+  {key:'ux', label:'UI - UX',                       gid:'2129088770', name:'UI - UX',                       desc:'Timer, country picker, referral, attribution'},
+  {key:'ar', label:'Auth OTP Resend',               gid:'1011553218', name:'Auth OTP Resend',               desc:'Auth context resend, expired request_id'},
+];
 
 const PROXIES = [
   u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
@@ -314,103 +276,95 @@ const PROXIES = [
   u => `https://thingproxy.freeboard.io/fetch/${u}`,
 ];
 
-// ── SECTION CONFIG ────────────────────────────────────────────────────────────
-const SECTIONS = [
-  {key:'ps', label:'Phone Signup',      match:'phone signup',    desc:'New user phone OTP signup flow, resend & rate limits'},
-  {key:'pl', label:'Phone Login',       match:'phone login',     desc:'Existing user phone OTP login, path differentiation'},
-  {key:'el', label:'Email Linking',     match:'email linking',   desc:'Post-signup email / social identity linking'},
-  {key:'pw', label:'Password Setup',    match:'password setup',  desc:'Password creation, validation rules, edge cases'},
-  {key:'mg', label:'Migration',         match:'migration',       desc:'Old user migration, legacy flow regression'},
-  {key:'da', label:'Decision API',      match:'decision api',    desc:'Flow control, drop-off recovery'},
-  {key:'sc', label:'Security',          match:'security',        desc:'Blacklists, VOIP, country blocks, expired tokens'},
-  {key:'ux', label:'UI / UX',           match:'ui / ux',         desc:'Timer, country picker, referral, attribution screen'},
-  {key:'ar', label:'Auth OTP Resend',   match:'auth otp resend', desc:'Auth context resend, expired request_id'},
-];
+// ── STATE ──────────────────────────────────────────────────────────────────────
+const data = {}; // key -> parsed rows (data only, no header)
 
-// ── STATE ─────────────────────────────────────────────────────────────────────
-let allRows    = []; // all valid TC rows
-let bySection  = {}; // key -> rows
-
-// ── TAB SWITCHING ─────────────────────────────────────────────────────────────
-function showTab(el, key) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+// ── TAB SWITCHING ──────────────────────────────────────────────────────────────
+function showTab(el, key){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
-  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
-  const pane = document.getElementById('pane-' + key);
-  if (pane) pane.classList.add('active');
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  const p=document.getElementById('pane-'+key);
+  if(p)p.classList.add('active');
 }
 
-// ── CSV PARSER ────────────────────────────────────────────────────────────────
-function parseCSV(text) {
-  const rows = [];
-  const lines = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
-  let i=0, len=lines.length;
-  while(i<len){
+// ── CSV PARSER ─────────────────────────────────────────────────────────────────
+function parseCSV(text){
+  const rows=[];
+  const s=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  let i=0,n=s.length;
+  while(i<n){
     const row=[];
-    while(i<len && lines[i]!=='\n'){
-      if(lines[i]==='"'){
-        i++;let cell='';
-        while(i<len){
-          if(lines[i]==='"'&&lines[i+1]==='"'){cell+='"';i+=2;}
-          else if(lines[i]==='"'){i++;break;}
-          else{cell+=lines[i++];}
+    while(i<n&&s[i]!=='\n'){
+      if(s[i]==='"'){
+        i++;let c='';
+        while(i<n){
+          if(s[i]==='"'&&s[i+1]==='"'){c+='"';i+=2;}
+          else if(s[i]==='"'){i++;break;}
+          else c+=s[i++];
         }
-        row.push(cell);
-        if(i<len&&lines[i]===',')i++;
+        row.push(c);
+        if(i<n&&s[i]===',')i++;
       } else {
-        let cell='';
-        while(i<len&&lines[i]!==','&&lines[i]!=='\n')cell+=lines[i++];
-        row.push(cell);
-        if(i<len&&lines[i]===',')i++;
+        let c='';
+        while(i<n&&s[i]!==','&&s[i]!=='\n')c+=s[i++];
+        row.push(c);
+        if(i<n&&s[i]===',')i++;
       }
     }
-    if(i<len)i++;
+    if(i<n)i++;
     if(row.length>0&&!(row.length===1&&row[0]===''))rows.push(row);
   }
   return rows;
 }
 
-// ── FETCH ─────────────────────────────────────────────────────────────────────
-async function tryUrl(url){
-  const r=await fetch(url,{cache:'no-store'});
-  if(!r.ok)throw new Error('HTTP '+r.status);
-  const t=await r.text();
-  if(t.trim().startsWith('<!')||t.includes('<html'))throw new Error('Got HTML — sheet not published');
-  if(t.trim().length<10)throw new Error('Empty response');
-  return parseCSV(t);
-}
+// ── FETCH ONE SHEET ────────────────────────────────────────────────────────────
+async function fetchSheet(gid, name){
+  const pubUrl  = `https://docs.google.com/spreadsheets/d/e/${PUB}/pub?gid=${gid}&single=true&output=csv`;
+  const gvizUrl = `https://docs.google.com/spreadsheets/d/${SID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(name)}`;
 
-async function fetchData(){
-  const urls=[
-    ['published CSV direct', CSV_URL],
-    ['gviz direct', GVIZ_URL],
-    ...PROXIES.map(px=>['proxy+published', px(CSV_URL)]),
-    ...PROXIES.map(px=>['proxy+gviz', px(GVIZ_URL)]),
+  const attempts = [
+    pubUrl,
+    gvizUrl,
+    ...PROXIES.map(p=>p(pubUrl)),
+    ...PROXIES.map(p=>p(gvizUrl)),
   ];
-  const errors=[];
-  for(const [label,url] of urls){
-    try{const d=await tryUrl(url);console.log('[ZPL] loaded via:',label);return d;}
-    catch(err){errors.push(`${label}: ${err.message}`);}
+
+  const errs=[];
+  for(const url of attempts){
+    try{
+      const r=await fetch(url,{cache:'no-store'});
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      const t=await r.text();
+      if(t.trim().startsWith('<')||t.trim().length<10)throw new Error('Got HTML or empty');
+      const rows=parseCSV(t);
+      // Find header row (has "Test ID" in col 0), return everything after it
+      const hi=rows.findIndex(r=>(r[0]||'').trim()==='Test ID');
+      if(hi===-1)throw new Error('Header row not found');
+      const dataRows=rows.slice(hi+1).filter(r=>(r[0]||'').trim().match(/^TC-\d+/));
+      if(dataRows.length===0)throw new Error('No TC rows found');
+      return dataRows;
+    } catch(e){errs.push(e.message);}
   }
-  throw new Error('Failed after '+urls.length+' attempts.\n\n'+errors.join('\n'));
+  throw new Error(errs.join(' | '));
 }
 
-// ── BADGE HELPERS ─────────────────────────────────────────────────────────────
-const e=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+// ── HELPERS ────────────────────────────────────────────────────────────────────
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
 function priKey(p){
   const s=(p||'').toLowerCase();
   if(s.includes('critical'))return'critical';
   if(s.includes('high'))return'high';
-  if(s.includes('medium')||s.includes('med'))return'medium';
+  if(s.includes('med'))return'medium';
   return'low';
 }
 function statusKey(s){
-  const st=(s||'').trim().toLowerCase();
-  return st==='pass'?'pass':st==='fail'?'fail':'na';
+  const v=(s||'').trim().toLowerCase();
+  return v==='pass'?'pass':v==='fail'?'fail':'na';
 }
 function catKey(c){
-  const s=(c||'').toLowerCase().trim();
+  const s=(c||'').toLowerCase();
   if(s.includes('happy'))return'happy';
   if(s.includes('otp'))return'otp';
   if(s.includes('security')||s.includes('sec'))return'sec';
@@ -422,94 +376,90 @@ function catKey(c){
   if(s.includes('ui'))return'ui';
   return'edge';
 }
-
 function priBadge(p){
   const k=priKey(p);
-  const labels={critical:'🔴 Critical',high:'🟠 High',medium:'🔵 Medium',low:'🟢 Low'};
+  const lbl={critical:'🔴 Critical',high:'🟠 High',medium:'🔵 Medium',low:'🟢 Low'};
   const cls={critical:'p-crit',high:'p-high',medium:'p-med',low:'p-low'};
-  return `<span class="pri-badge ${cls[k]}">${labels[k]}</span>`;
+  return `<span class="pri ${cls[k]}">${lbl[k]}</span>`;
 }
-function statusBadge(s){
+function statBadge(s){
   const k=statusKey(s);
-  const labels={pass:'Pass',fail:'Fail',na:'Not Run'};
+  const lbl={pass:'Pass',fail:'Fail',na:'Not Run'};
   const cls={pass:'s-pass',fail:'s-fail',na:'s-na'};
-  return `<span class="status-badge ${cls[k]}">${labels[k]}</span>`;
+  return `<span class="status-badge ${cls[k]}">${lbl[k]}</span>`;
 }
 function catBadge(c){
   const k=catKey(c);
-  const cls={happy:'cat-happy',otp:'cat-otp',sec:'cat-sec',edge:'cat-edge',val:'cat-val',flow:'cat-flow',reg:'cat-reg',mig:'cat-mig',ui:'cat-ui'};
-  return `<span class="cat-badge ${cls[k]||'cat-edge'}">${e(c)}</span>`;
+  const cls={happy:'c-happy',otp:'c-otp',sec:'c-sec',edge:'c-edge',val:'c-val',flow:'c-flow',reg:'c-reg',mig:'c-mig',ui:'c-ui'};
+  return `<span class="cat ${cls[k]||'c-edge'}">${esc(c)}</span>`;
 }
 
-// ── TABLE BUILDER ─────────────────────────────────────────────────────────────
+// cols: 0=TestID 1=Title 2=Priority 3=Category 4=Precondition 5=Steps 6=Expected 7=DB/Redis 8=Status
 function buildTable(rows, key){
-  let html=`<table><thead><tr><th>TC ID</th><th>Status</th><th style="min-width:120px">Section</th><th style="min-width:240px">Test Case Title</th><th>Priority</th><th>Category</th><th style="min-width:160px">Precondition</th><th style="min-width:220px">Steps</th><th style="min-width:200px">Expected Result</th><th style="min-width:200px">DB / Redis Validation</th></tr></thead><tbody id="body-${key}">`;
-  let count=0;
-  rows.forEach(r=>{
+  if(!rows||rows.length===0) return {html:'<div class="loading-wrap"><p style="color:var(--silver)">No test cases in this section.</p></div>',count:0};
+  let html=`<table><thead><tr>
+    <th>TC ID</th><th>Status</th><th style="min-width:230px">Test Case Title</th>
+    <th>Priority</th><th>Category</th><th style="min-width:150px">Precondition</th>
+    <th style="min-width:210px">Steps</th><th style="min-width:190px">Expected Result</th>
+    <th style="min-width:190px">DB / Redis Validation</th>
+  </tr></thead><tbody id="body-${key}">`;
+  rows.forEach((r,i)=>{
     const id=(r[0]||'').trim();
-    if(!id.match(/^TC-\d+/))return;
-    count++;
-    const bg=count%2===0?'var(--paper)':'';
-    const sec=(r[1]||'').trim();
-    const status=statusKey(r[9]||'');
+    const bg=i%2===0?'':'var(--paper)';
     html+=`<tr style="background:${bg}"
-      data-s="${status}"
-      data-p="${priKey(r[3])}"
-      data-sec="${sec.toLowerCase()}"
-      data-q="${(id+' '+(r[2]||'')+' '+sec+' '+(r[4]||'')+' '+(r[5]||'')+' '+(r[6]||'')+' '+(r[7]||'')).toLowerCase()}">
-      <td class="tc-id">${e(id)}</td>
-      <td>${statusBadge(r[9]||'')}</td>
-      <td><span class="sec-badge" style="font-size:.6rem">${e(sec)}</span></td>
-      <td style="font-weight:500">${e(r[2])}</td>
-      <td>${priBadge(r[3])}</td>
-      <td>${catBadge(r[4])}</td>
-      <td style="font-size:.71rem;color:var(--charcoal)">${e(r[5])}</td>
-      <td class="steps">${e(r[6])}</td>
-      <td class="exp">${e(r[7])}</td>
-      <td class="db-note">${e(r[8])}</td>
+      data-s="${statusKey(r[8])}"
+      data-p="${priKey(r[2])}"
+      data-c="${(r[3]||'').toLowerCase()}"
+      data-q="${(id+' '+(r[1]||'')+' '+(r[3]||'')+' '+(r[4]||'')+' '+(r[5]||'')).toLowerCase()}">
+      <td class="tc-id">${esc(id)}</td>
+      <td>${statBadge(r[8])}</td>
+      <td style="font-weight:500;font-size:.75rem">${esc(r[1])}</td>
+      <td>${priBadge(r[2])}</td>
+      <td>${catBadge(r[3])}</td>
+      <td style="font-size:.7rem;color:var(--charcoal)">${esc(r[4])}</td>
+      <td class="steps">${esc(r[5])}</td>
+      <td class="exp">${esc(r[6])}</td>
+      <td class="dbnote">${esc(r[7])}</td>
     </tr>`;
   });
-  return {html:html+'</tbody></table>',count};
+  return {html:html+'</tbody></table>',count:rows.length};
 }
 
-// ── FILTERS ───────────────────────────────────────────────────────────────────
+// ── FILTER ─────────────────────────────────────────────────────────────────────
 function applyFilter(key){
   const g=id=>{const el=document.getElementById(id);return el?el.value.toLowerCase().trim():'';};
-  const sf=g('f-'+key+'-s'), pf=g('f-'+key+'-p'), secf=g('f-'+key+'-sec')||'', tf=g('f-'+key+'-q');
+  const sf=g('f-'+key+'-s'), pf=g('f-'+key+'-p'), cf=g('f-'+key+'-c'), tf=g('f-'+key+'-q');
   const tb=document.getElementById('body-'+key);if(!tb)return;
   const rows=tb.querySelectorAll('tr');let shown=0,total=0;
   rows.forEach(r=>{
     total++;let v=true;
     if(sf&&r.dataset.s!==sf)v=false;
     if(pf&&r.dataset.p!==pf)v=false;
-    if(secf&&!r.dataset.sec.includes(secf))v=false;
+    if(cf&&!r.dataset.c.includes(cf))v=false;
     if(tf&&!r.dataset.q.includes(tf))v=false;
     r.style.display=v?'':'none';if(v)shown++;
   });
   let idx=0;rows.forEach(r=>{if(r.style.display==='none')return;r.style.background=idx++%2===0?'':'var(--paper)';});
-  const c=document.getElementById('c-'+key);if(c)c.textContent=shown===total?total+' test cases':'Showing '+shown+' of '+total;
+  const c=document.getElementById('c-'+key);
+  if(c)c.textContent=shown===total?total+' test cases':'Showing '+shown+' of '+total;
 }
 
-// ── SUMMARY BUILDER ───────────────────────────────────────────────────────────
+// ── SUMMARY ────────────────────────────────────────────────────────────────────
 function buildSummary(){
-  const secStats={};
   let tot=0,tp=0,tf=0,tn=0,tcrit=0,thigh=0;
-  SECTIONS.forEach(({key,label})=>{secStats[key]={n:0,pass:0,fail:0,na:0,crit:0,label};});
-
-  allRows.forEach(r=>{
-    const id=(r[0]||'').trim();if(!id.match(/^TC-\d+/))return;
-    const sec=(r[1]||'').toLowerCase();
-    const pk=priKey(r[3]), sk=statusKey(r[9]||'');
-    const matched=SECTIONS.find(s=>sec.includes(s.match));
-    if(matched){
-      const m=secStats[matched.key];m.n++;
-      if(sk==='pass')m.pass++;else if(sk==='fail')m.fail++;else m.na++;
-      if(pk==='critical')m.crit++;
-    }
-    tot++;
-    if(sk==='pass')tp++;else if(sk==='fail')tf++;else tn++;
-    if(pk==='critical')tcrit++;
-    if(pk==='high')thigh++;
+  const stats={};
+  SHEETS.forEach(({key,label,desc})=>{
+    const rows=data[key]||[];
+    let n=0,pass=0,fail=0,na=0,crit=0;
+    rows.forEach(r=>{
+      n++;
+      const sk=statusKey(r[8]),pk=priKey(r[2]);
+      if(sk==='pass')pass++;else if(sk==='fail')fail++;else na++;
+      if(pk==='critical')crit++;
+    });
+    stats[key]={n,pass,fail,na,crit,label,desc};
+    tot+=n;tp+=pass;tf+=fail;tn+=na;tcrit+=crit;
+    thigh+=rows.filter(r=>priKey(r[2])==='high').length;
   });
 
   const prog=tot>0?Math.round((tp+tf)/tot*100):0;
@@ -520,33 +470,30 @@ function buildSummary(){
   document.getElementById('k-prog').textContent=prog+'%';
   document.getElementById('k-crit').textContent=tcrit;
   document.getElementById('k-high').textContent=thigh;
-  document.getElementById('tb-all').textContent=tot;
 
   let html=`<table class="sum-t"><thead><tr>
     <th>Section</th><th style="text-align:center"># TCs</th>
     <th style="text-align:center">Pass</th><th style="text-align:center">Fail</th>
-    <th style="text-align:center">Not Run</th><th style="min-width:180px">Progress</th>
+    <th style="text-align:center">Not Run</th><th style="min-width:170px">Progress</th>
     <th>Coverage</th>
   </tr></thead><tbody>`;
 
-  SECTIONS.forEach(({key,desc})=>{
-    const c=secStats[key];if(!c||!c.n)return;
-    const pp=c.n>0?Math.round(c.pass/c.n*100):0;
-    const fp=c.n>0?Math.round(c.fail/c.n*100):0;
-    const np=100-pp-fp;
-    const pct=c.n>0?Math.round((c.pass+c.fail)/c.n*100):0;
+  SHEETS.forEach(({key})=>{
+    const c=stats[key];if(!c||!c.n)return;
+    const pp=Math.round(c.pass/c.n*100), fp=Math.round(c.fail/c.n*100), np=100-pp-fp;
+    const pct=Math.round((c.pass+c.fail)/c.n*100);
     html+=`<tr>
-      <td><strong>${c.label}</strong></td>
+      <td><strong>${c.label}</strong>${c.crit?` <span style="font-size:.61rem;color:var(--red);font-weight:600">${c.crit} crit</span>`:''}  </td>
       <td style="text-align:center;font-weight:600">${c.n}</td>
-      <td style="text-align:center">${c.pass?'<span class="status-badge s-pass">'+c.pass+'</span>':'<span style="color:var(--silver)">—</span>'}</td>
-      <td style="text-align:center">${c.fail?'<span class="status-badge s-fail">'+c.fail+'</span>':'<span style="color:var(--silver)">—</span>'}</td>
-      <td style="text-align:center">${c.na?'<span class="status-badge s-na">'+c.na+'</span>':'<span style="color:var(--silver)">—</span>'}</td>
+      <td style="text-align:center">${c.pass?`<span class="status-badge s-pass">${c.pass}</span>`:'<span style="color:var(--silver)">—</span>'}</td>
+      <td style="text-align:center">${c.fail?`<span class="status-badge s-fail">${c.fail}</span>`:'<span style="color:var(--silver)">—</span>'}</td>
+      <td style="text-align:center">${c.na?`<span class="status-badge s-na">${c.na}</span>`:'<span style="color:var(--silver)">—</span>'}</td>
       <td><div class="pb"><div class="pbr">
-        <div class="pbf pbf-pass" style="width:${pp}%"></div>
-        <div class="pbf pbf-fail" style="width:${fp}%;left:${pp}%"></div>
-        <div class="pbf pbf-na"   style="width:${np}%;left:${pp+fp}%"></div>
-      </div><span class="pb-text">${pct}% done</span></div></td>
-      <td style="font-size:.71rem;color:var(--silver);font-style:italic">${desc}</td>
+        <div class="pbf pbf-p" style="width:${pp}%"></div>
+        <div class="pbf pbf-f" style="width:${fp}%;left:${pp}%"></div>
+        <div class="pbf pbf-n" style="width:${np}%;left:${pp+fp}%"></div>
+      </div><span class="pb-txt">${pct}% done</span></div></td>
+      <td style="font-size:.7rem;color:var(--silver);font-style:italic">${c.desc}</td>
     </tr>`;
   });
 
@@ -556,119 +503,100 @@ function buildSummary(){
     <td style="text-align:center"><strong>${tp}</strong></td>
     <td style="text-align:center"><strong>${tf}</strong></td>
     <td style="text-align:center"><strong>${tn}</strong></td>
-    <td><span class="pb-text" style="color:var(--white)"><strong>${prog}% Complete</strong></span></td>
+    <td><span class="pb-txt" style="color:#fff"><strong>${prog}% Complete</strong></span></td>
     <td></td>
-  </tr></tbody></table>`;
-
-  html+=`<div class="legend">
+  </tr></tbody></table>
+  <div class="legend">
     <span class="legend-lbl">Status</span>
     <div class="legend-item"><div class="ldot" style="background:var(--pass)"></div>Pass</div>
     <div class="legend-item"><div class="ldot" style="background:var(--fail)"></div>Fail</div>
     <div class="legend-item"><div class="ldot" style="background:var(--na)"></div>Not Run</div>
     <span class="legend-lbl" style="margin-left:8px">Priority</span>
-    <div class="legend-item"><div class="ldot" style="background:var(--crit)"></div>Critical</div>
-    <div class="legend-item"><div class="ldot" style="background:var(--high)"></div>High</div>
-    <div class="legend-item"><div class="ldot" style="background:var(--med)"></div>Medium</div>
-    <div class="legend-item"><div class="ldot" style="background:var(--low)"></div>Low</div>
+    <div class="legend-item"><div class="ldot" style="background:var(--red)"></div>Critical</div>
+    <div class="legend-item"><div class="ldot" style="background:var(--amber)"></div>High</div>
+    <div class="legend-item"><div class="ldot" style="background:var(--blue)"></div>Medium</div>
+    <div class="legend-item"><div class="ldot" style="background:var(--pass)"></div>Low</div>
   </div>`;
-
   return html;
 }
 
-// ── STATUS HELPERS ────────────────────────────────────────────────────────────
+// ── LOAD STATUS UI ─────────────────────────────────────────────────────────────
+function initLoadGrid(){
+  const grid=document.getElementById('load-grid');
+  grid.innerHTML=SHEETS.map(({key,label})=>`
+    <div class="ls-row" id="ls-${key}">
+      <div class="ls-icon spinning" id="lsi-${key}"></div>
+      <span class="ls-name">${label}</span>
+      <span class="ls-msg" id="lsm-${key}">Connecting…</span>
+    </div>`).join('');
+}
+function setLS(key,state,msg){
+  const icon=document.getElementById('lsi-'+key);
+  const msgEl=document.getElementById('lsm-'+key);
+  if(icon){icon.className='ls-icon '+(state==='ok'?'ok':state==='err'?'err':'spinning');icon.textContent=state==='ok'?'✓':state==='err'?'✗':'';}
+  if(msgEl){msgEl.textContent=msg;msgEl.className='ls-msg'+(state==='err'?' error':'');}
+}
 function setSyncState(s,l){
   document.getElementById('sync-dot').className='dot '+s;
   document.getElementById('sync-lbl').textContent=l;
 }
-function setLS(state,msg){
-  const icon=document.getElementById('ls-icon');
-  const msgEl=document.getElementById('ls-msg');
-  if(icon){icon.className='ls-icon '+(state==='ok'?'ok':state==='err'?'err':'spinning');icon.textContent=state==='ok'?'✓':state==='err'?'✗':'';}
-  if(msgEl){msgEl.textContent=msg;msgEl.className='ls-msg'+(state==='err'?' error':'');}
-}
-function hideSetup(){
-  const box=document.getElementById('setup-instructions');
-  const spinner=document.getElementById('initial-spinner');
-  if(box)box.style.display='none';
-  if(spinner)spinner.style.display='none';
-}
-function showErr(msg){
-  document.getElementById('sum-area').innerHTML=`<div class="err-box">
-    <h3>⚠ Could not load data from Google Sheets</h3>
-    <p>Make sure the sheet is published: <strong>File → Share → Publish to web → Test Cases tab → CSV → Publish</strong></p>
-    <p style="margin-top:12px;font-size:.71rem;color:var(--mid);white-space:pre-wrap">Technical detail: ${msg.replace(/</g,'&lt;')}</p>
-  </div>`;
-}
 
-// ── MAIN LOAD ─────────────────────────────────────────────────────────────────
+// ── MAIN LOAD ──────────────────────────────────────────────────────────────────
 async function loadAll(){
   setSyncState('loading','Loading…');
-  setLS('spinning','Connecting to Google Sheets…');
+  initLoadGrid();
+  document.getElementById('init-spinner').style.display='flex';
 
-  try {
-    const raw = await fetchData();
+  // Fetch all sheets in parallel
+  const results=await Promise.allSettled(
+    SHEETS.map(({key,gid,name})=>fetchSheet(gid,name).then(rows=>({key,rows})))
+  );
 
-    // Find header row (row with "Test ID")
-    let headerIdx = raw.findIndex(r => (r[0]||'').trim() === 'Test ID');
-    if(headerIdx === -1) headerIdx = 1; // fallback
+  let anyOk=false, anyErr=false;
+  results.forEach((res,i)=>{
+    const {key}=SHEETS[i];
+    if(res.status==='fulfilled'){
+      data[key]=res.value.rows;
+      setLS(key,'ok',res.value.rows.length+' TCs');
+      anyOk=true;
 
-    // All rows after header, only valid TC rows
-    const dataRows = raw.slice(headerIdx + 1);
-    allRows = dataRows.filter(r => (r[0]||'').trim().match(/^TC-\d+/));
-
-    // Col 9 = Status (may not exist in original sheet — it's the 10th col if added)
-    // Original cols: 0=TestID, 1=Section, 2=Title, 3=Priority, 4=Category, 5=Precondition, 6=Steps, 7=Expected, 8=DB/Redis
-    // Status column (9) might be missing in original — we default to 'na' if missing
-
-    // Build bySection
-    bySection = {};
-    SECTIONS.forEach(({key})=>{bySection[key]=[];});
-    allRows.forEach(r=>{
-      const sec=(r[1]||'').toLowerCase();
-      const matched=SECTIONS.find(s=>sec.includes(s.match));
-      if(matched)bySection[matched.key].push(r);
-    });
-
-    setLS('ok', allRows.length + ' test cases loaded');
-    hideSetup();
-
-    // Build summary
-    document.getElementById('sum-area').innerHTML = buildSummary();
-    document.getElementById('sum-ts').textContent = 'Updated ' + new Date().toLocaleTimeString();
-
-    // Build section tables
-    SECTIONS.forEach(({key,label})=>{
-      const {html, count} = buildTable(bySection[key]||[], key);
-      const wrap = document.getElementById('wrap-'+key);
-      if(wrap){wrap.innerHTML=html;}
-      const badge = document.getElementById('tb-'+key);
+      // Render table
+      const {html,count}=buildTable(data[key],key);
+      const wrap=document.getElementById('wrap-'+key);
+      if(wrap)wrap.innerHTML=html;
+      const badge=document.getElementById('tb-'+key);
       if(badge)badge.textContent=count;
-      const cnt = document.getElementById('c-'+key);
+      const cnt=document.getElementById('c-'+key);
       if(cnt)cnt.textContent=count+' test cases';
       applyFilter(key);
+    } else {
+      data[key]=[];
+      setLS(key,'err','Failed: '+res.reason.message.split('|')[0].trim());
+      anyErr=true;
+    }
+  });
+
+  document.getElementById('init-spinner').style.display='none';
+
+  if(anyOk){
+    const sumHtml=buildSummary();
+    document.getElementById('sum-area').innerHTML=`<div class="load-grid" id="load-grid"></div>${sumHtml}`;
+    // Re-render load grid inside summary with final states
+    initLoadGrid();
+    results.forEach((res,i)=>{
+      const {key,label}=SHEETS[i];
+      if(res.status==='fulfilled') setLS(key,'ok',(data[key]||[]).length+' TCs');
+      else setLS(key,'err','Failed');
     });
-
-    // Build "All" table
-    const {html:allHtml, count:allCount} = buildTable(allRows,'all');
-    const wrapAll = document.getElementById('wrap-all');
-    if(wrapAll)wrapAll.innerHTML=allHtml;
-    document.getElementById('c-all').textContent=allCount+' test cases';
-    applyFilter('all');
-
-    const now = new Date();
-    document.getElementById('last-sync').textContent = 'Synced ' + now.toLocaleTimeString();
-    setSyncState('live','Live');
-
-  } catch(err) {
-    console.error(err);
-    setLS('err', err.message);
-    showErr(err.message);
-    setSyncState('error','Error — check console');
+    document.getElementById('sum-ts').textContent='Updated '+new Date().toLocaleTimeString();
   }
+
+  document.getElementById('last-sync').textContent='Synced '+new Date().toLocaleTimeString();
+  setSyncState(anyErr&&!anyOk?'error':anyErr?'loading':'live', anyErr&&!anyOk?'Error':anyErr?'Partial':'Live');
 }
 
 loadAll();
-setInterval(loadAll, 60000);
+setInterval(loadAll,60000);
 </script>
 </body>
 </html>
