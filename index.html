@@ -6,19 +6,20 @@
 <title>Zolve — Passwordless V5 QA Dashboard</title>
 <style>
 :root{
-  --black:#1A1A1A;--ink:#2C2C2C;--charcoal:#4A4A4A;--mid:#7A7A7A;
-  --silver:#A5A5A5;--bone:#E8E4DC;--linen:#F2EFE9;--paper:#F8F6F2;--white:#FFFFFF;
+  --black:#1A1A1A;--ink:#2C2C2C;--charcoal:#4A4A4A;--mid:#7A7A7A;--silver:#A5A5A5;
+  --bone:#E8E4DC;--linen:#F2EFE9;--paper:#F8F6F2;--white:#FFFFFF;
   --red:#B03A2E;--red2:#F9EDEC;--amber:#8A5A00;--amber2:#FBF5E6;
   --green:#2D6A4F;--green2:#EAF3EE;--blue:#1D4E89;--blue2:#EBF2FB;
   --pass:#2D6A4F;--fail:#B03A2E;--na:#7A7A7A;
-  --brd:#E2DDD6;--brd2:#CCC8C0;
-  --r:6px;--r2:10px;--sh:0 2px 18px rgba(0,0,0,.09);
-  --brand:#4B3B8C;--brand2:#7C5CBF;--brand-light:#EEEAF8;
+  --brd:#E2DDD6;--brd2:#CCC8C0;--r:6px;--r2:10px;--sh:0 2px 18px rgba(0,0,0,.09);
+  --brand:#4B3B8C;--brand2:#7C5CBF;--brand-lt:#EEEAF8;
+  --bug:#7B2235;--bug2:#FAEDEE;--bug3:#E8B4BB;
+  --imp:#0F6B5C;--imp2:#E6F4F1;--imp3:#9DD6CC;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,Arial,sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
 
-/* HEADER */
+/* ── HEADER ── */
 .hdr{background:var(--black);padding:18px 40px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border-bottom:1px solid #333}
 .hdr-brand{display:flex;align-items:center;gap:12px}
 .hdr-logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#4B3B8C,#7C5CBF);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0}
@@ -26,7 +27,7 @@ body{font-family:'Segoe UI',system-ui,Arial,sans-serif;background:var(--paper);c
 .hdr p{color:var(--silver);font-size:.72rem;margin-top:2px}
 .hdr-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .sync-pill{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.07);color:var(--silver);padding:5px 13px;border-radius:20px;font-size:.7rem;font-weight:500;border:1px solid rgba(255,255,255,.12)}
-.dot{width:7px;height:7px;border-radius:50%}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .dot.loading{background:#FCD34D;animation:blink .9s ease-in-out infinite}
 .dot.error{background:#F87171}
 .dot.live{background:#6EE7B7;animation:glow 2.5s ease-in-out infinite}
@@ -36,52 +37,97 @@ body{font-family:'Segoe UI',system-ui,Arial,sans-serif;background:var(--paper);c
 .refresh-btn:hover{background:rgba(255,255,255,.14);color:#fff}
 #last-sync{color:rgba(255,255,255,.35);font-size:.68rem}
 
-/* KPI BAR */
+/* ── SUPER TABS ── */
+.super-bar{background:var(--black);padding:0 40px;display:flex;border-bottom:2px solid #333}
+.super-tab{padding:10px 22px;cursor:pointer;font-size:.78rem;font-weight:500;color:rgba(255,255,255,.45);border:none;background:transparent;border-bottom:3px solid transparent;transition:all .18s;white-space:nowrap;margin-bottom:-2px;user-select:none}
+.super-tab:hover{color:rgba(255,255,255,.75)}
+.super-tab.active{color:#fff;border-bottom-color:#fff;font-weight:600}
+.super-tab.active.tc-super{border-bottom-color:var(--brand2)}
+.super-tab.active.bug-super{border-bottom-color:#F87171}
+.super-tab.active.imp-super{border-bottom-color:#6EE7B7}
+.st-badge{display:inline-block;background:rgba(255,255,255,.12);color:rgba(255,255,255,.6);border-radius:20px;padding:1px 8px;font-size:.62rem;margin-left:6px;font-weight:600}
+.super-tab.active .st-badge{background:#fff;color:var(--black)}
+.st-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-left:5px;vertical-align:middle}
+
+/* ── KPI BAR ── */
 .kpi-bar{display:flex;gap:1px;background:var(--brd);border-bottom:1px solid var(--brd)}
 .kpi{background:#fff;padding:16px 22px;flex:1;min-width:100px;display:flex;flex-direction:column;gap:4px;border-top:3px solid transparent;transition:background .15s}
 .kpi:hover{background:var(--linen)}
+.kn{font-size:1.85rem;font-weight:700;line-height:1;letter-spacing:-.5px;font-variant-numeric:tabular-nums;color:var(--black)}
+.kl{font-size:.66rem;color:var(--mid);text-transform:uppercase;letter-spacing:.8px;font-weight:500}
+/* TC kpis */
 .kpi.k-total{border-color:var(--brand)} .kpi.k-pass{border-color:var(--pass)} .kpi.k-fail{border-color:var(--fail)}
 .kpi.k-na{border-color:var(--na)}       .kpi.k-prog{border-color:var(--blue)} .kpi.k-crit{border-color:var(--red)}
 .kpi.k-high{border-color:var(--amber)}
-.kn{font-size:1.85rem;font-weight:700;line-height:1;letter-spacing:-.5px;font-variant-numeric:tabular-nums;color:var(--black)}
-.kl{font-size:.66rem;color:var(--mid);text-transform:uppercase;letter-spacing:.8px;font-weight:500}
 .kpi.k-total .kn{color:var(--brand)} .kpi.k-pass .kn{color:var(--pass)} .kpi.k-fail .kn{color:var(--fail)}
 .kpi.k-na .kn{color:var(--na)}       .kpi.k-prog .kn{color:var(--blue)} .kpi.k-crit .kn{color:var(--red)}
 .kpi.k-high .kn{color:var(--amber)}
+/* Bug kpis */
+.kpi.bk-total{border-color:var(--bug)} .kpi.bk-crit{border-color:var(--red)} .kpi.bk-high{border-color:var(--amber)}
+.kpi.bk-med{border-color:var(--blue)}  .kpi.bk-open{border-color:var(--bug)} .kpi.bk-fixed{border-color:var(--pass)}
+.kpi.bk-total .kn{color:var(--bug)} .kpi.bk-crit .kn{color:var(--red)} .kpi.bk-high .kn{color:var(--amber)}
+.kpi.bk-med .kn{color:var(--blue)}  .kpi.bk-open .kn{color:var(--bug)} .kpi.bk-fixed .kn{color:var(--pass)}
+/* Imp kpis */
+.kpi.ik-total{border-color:var(--imp)} .kpi.ik-high{border-color:var(--amber)} .kpi.ik-med{border-color:var(--blue)}
+.kpi.ik-low{border-color:var(--pass)}  .kpi.ik-open{border-color:var(--imp)}  .kpi.ik-done{border-color:var(--pass)}
+.kpi.ik-total .kn{color:var(--imp)} .kpi.ik-high .kn{color:var(--amber)} .kpi.ik-med .kn{color:var(--blue)}
+.kpi.ik-low .kn{color:var(--pass)}  .kpi.ik-open .kn{color:var(--imp)}  .kpi.ik-done .kn{color:var(--pass)}
 
-/* TABS */
+/* ── SUB TABS ── */
 .tab-bar{display:flex;padding:0 40px;overflow-x:auto;background:var(--linen);border-bottom:1px solid var(--brd);scrollbar-width:none}
 .tab-bar::-webkit-scrollbar{display:none}
 .tab{padding:11px 14px;cursor:pointer;font-size:.75rem;font-weight:500;color:var(--mid);background:transparent;border:none;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;user-select:none}
 .tab:hover{color:var(--ink);background:var(--bone)}
-.tab.active{color:var(--brand);border-bottom-color:var(--brand);font-weight:600;background:#fff}
 .tab-badge{display:inline-block;background:var(--bone);color:var(--charcoal);border-radius:20px;padding:1px 7px;font-size:.61rem;margin-left:4px;font-weight:600}
-.tab.active .tab-badge{background:var(--brand);color:#fff}
+/* TC tabs */
+.tc-tabs .tab.active{color:var(--brand);border-bottom-color:var(--brand);font-weight:600;background:#fff}
+.tc-tabs .tab.active .tab-badge{background:var(--brand);color:#fff}
+/* Bug tabs */
+.bug-tabs{background:var(--bug2)}
+.bug-tabs .tab.active{color:var(--bug);border-bottom-color:var(--bug);font-weight:600;background:#fff}
+.bug-tabs .tab.active .tab-badge{background:var(--bug);color:#fff}
+/* Imp tabs */
+.imp-tabs{background:var(--imp2)}
+.imp-tabs .tab.active{color:var(--imp);border-bottom-color:var(--imp);font-weight:600;background:#fff}
+.imp-tabs .tab.active .tab-badge{background:var(--imp);color:#fff}
 
-/* CONTENT */
-.content{background:#fff;margin:0 40px 40px;border-radius:0 0 var(--r2) var(--r2);box-shadow:var(--sh);border:1px solid var(--brd);border-top:3px solid var(--brand);overflow:hidden;min-height:360px}
+/* ── CONTENT ── */
+.content{background:#fff;margin:0 40px 40px;border-radius:0 0 var(--r2) var(--r2);box-shadow:var(--sh);border:1px solid var(--brd);border-top:3px solid var(--brand);overflow:hidden;min-height:340px}
+.content.bug-content{border-top-color:var(--bug)}
+.content.imp-content{border-top-color:var(--imp)}
 .pane{display:none}.pane.active{display:block}
 
-/* FILTER BAR */
-.fb{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--brd);flex-wrap:wrap;background:var(--brand-light)}
-.fb label{font-size:.68rem;font-weight:600;color:var(--brand);text-transform:uppercase;letter-spacing:.5px}
+/* ── FILTER BAR ── */
+.fb{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--brd);flex-wrap:wrap}
+.fb.tc-fb{background:var(--brand-lt)}
+.fb.bug-fb{background:var(--bug2)}
+.fb.imp-fb{background:var(--imp2)}
+.fb label{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.tc-fb label{color:var(--brand)} .bug-fb label{color:var(--bug)} .imp-fb label{color:var(--imp)}
 .fb select,.fb input{padding:5px 9px;border:1px solid var(--brd);border-radius:var(--r);font-size:.73rem;background:#fff;color:var(--ink);outline:none;font-family:inherit}
-.fb select:focus,.fb input:focus{border-color:var(--brand)}
-.fb input{min-width:180px}
+.tc-fb select:focus,.tc-fb input:focus{border-color:var(--brand)}
+.bug-fb select:focus,.bug-fb input:focus{border-color:var(--bug)}
+.imp-fb select:focus,.imp-fb input:focus{border-color:var(--imp)}
+.fb input{min-width:170px}
 .fc{margin-left:auto;font-size:.69rem;color:var(--silver);font-style:italic;white-space:nowrap}
 
-/* TABLE */
+/* ── TABLE ── */
 .tbl-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:.77rem}
-thead th{background:var(--black);color:#fff;font-weight:500;padding:9px 12px;text-align:left;white-space:nowrap;font-size:.67rem;text-transform:uppercase;letter-spacing:.6px}
+.tc-thead{background:var(--black)}
+.bug-thead{background:var(--bug)}
+.imp-thead{background:var(--imp)}
+thead th{color:#fff;font-weight:500;padding:9px 12px;text-align:left;white-space:nowrap;font-size:.67rem;text-transform:uppercase;letter-spacing:.6px}
 tbody td{padding:10px 12px;border-bottom:1px solid var(--linen);vertical-align:top;line-height:1.55}
 tbody tr:hover{background:var(--paper)!important}
-.tc-id{font-family:'Courier New',monospace;font-weight:700;color:var(--brand);font-size:.71rem;white-space:nowrap}
+.tc-id{font-family:'Courier New',monospace;font-weight:700;font-size:.71rem;white-space:nowrap}
+.tc-id.t{color:var(--brand)} .tc-id.b{color:var(--bug)} .tc-id.i{color:var(--imp)}
 .steps{white-space:pre-line;font-size:.71rem;color:var(--charcoal);line-height:1.6}
 .exp{font-size:.71rem;color:#1E4D35;line-height:1.55}
-.dbnote{font-size:.67rem;color:var(--mid);font-style:italic;white-space:pre-line;line-height:1.5}
+.act{font-size:.71rem;color:#7B2A23;line-height:1.55}
+.note{font-size:.67rem;color:var(--mid);font-style:italic;white-space:pre-line;line-height:1.5}
 
-/* BADGES */
+/* ── BADGES ── */
 .pri{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.63rem;font-weight:600;white-space:nowrap}
 .p-crit{background:var(--red2);color:var(--red);border:1px solid #DBA9A5}
 .p-high{background:var(--amber2);color:var(--amber);border:1px solid #D4B87A}
@@ -101,49 +147,58 @@ tbody tr:hover{background:var(--paper)!important}
 .s-pass{background:var(--green2);color:var(--pass);border:1px solid #A8CFB8}
 .s-fail{background:var(--red2);color:var(--fail);border:1px solid #DBA9A5}
 .s-na{background:var(--linen);color:var(--na);border:1px solid var(--brd2)}
+.bug-open{background:var(--bug2);color:var(--bug);border:1px solid var(--bug3);display:inline-block;padding:3px 9px;border-radius:20px;font-size:.64rem;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.bug-fixed{background:var(--green2);color:var(--pass);border:1px solid #A8CFB8;display:inline-block;padding:3px 9px;border-radius:20px;font-size:.64rem;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.imp-open{background:var(--imp2);color:var(--imp);border:1px solid var(--imp3);display:inline-block;padding:3px 9px;border-radius:20px;font-size:.64rem;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.imp-done{background:var(--green2);color:var(--pass);border:1px solid #A8CFB8;display:inline-block;padding:3px 9px;border-radius:20px;font-size:.64rem;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
 
-/* SUMMARY */
+/* ── SUMMARY ── */
 .sw{padding:26px 30px}
 .sw-hdr{display:flex;align-items:baseline;gap:14px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--brd);flex-wrap:wrap}
 .sw-hdr h2{font-size:.98rem;font-weight:600;color:var(--black)}
 .sw-hdr span{font-size:.71rem;color:var(--silver)}
 .sum-t{width:100%;border-collapse:collapse;font-size:.79rem}
-.sum-t thead th{background:var(--black);color:#fff;padding:9px 13px;text-align:left;font-size:.67rem;text-transform:uppercase;letter-spacing:.6px;font-weight:500}
+.sum-t thead th{padding:9px 13px;text-align:left;font-size:.67rem;text-transform:uppercase;letter-spacing:.6px;font-weight:500;color:#fff}
+.sum-t .tc-sum-head{background:var(--black)}
+.sum-t .bug-sum-head{background:var(--bug)}
+.sum-t .imp-sum-head{background:var(--imp)}
 .sum-t tbody td{padding:10px 13px;border-bottom:1px solid var(--linen)}
 .sum-t tbody tr:nth-child(odd){background:#fff}
 .sum-t tbody tr:nth-child(even){background:var(--paper)}
 .sum-t tbody tr:hover{background:var(--linen)}
 .sum-t .tr-total td{background:var(--black);color:#fff;font-weight:600}
+.sum-t .tr-total.bug td{background:var(--bug)}
+.sum-t .tr-total.imp td{background:var(--imp)}
 .pb{display:flex;align-items:center;gap:8px}
 .pbr{height:6px;border-radius:3px;background:var(--bone);flex:1;overflow:hidden;min-width:90px;position:relative}
 .pbf{height:100%;position:absolute;top:0;left:0}
-.pbf-p{background:var(--pass)}.pbf-f{background:var(--fail)}.pbf-n{background:var(--na)}
-.pb-txt{font-size:.68rem;color:var(--mid);min-width:62px;font-weight:500;font-variant-numeric:tabular-nums}
+.pbf-p{background:var(--pass)}.pbf-f{background:var(--fail)}.pbf-n{background:var(--na)}.pbf-bug{background:var(--bug)}.pbf-imp{background:var(--imp)}
+.pb-txt{font-size:.68rem;color:var(--mid);min-width:60px;font-weight:500;font-variant-numeric:tabular-nums}
 .legend{margin-top:22px;padding-top:18px;border-top:1px solid var(--brd);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .legend-lbl{font-size:.69rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.5px;margin-right:3px}
 .legend-item{display:flex;align-items:center;gap:6px;background:var(--paper);border:1px solid var(--brd);padding:5px 10px;border-radius:var(--r);font-size:.72rem}
 .ldot{width:8px;height:8px;border-radius:50%}
 
-/* LOADING / ERROR */
-.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:70px 20px;gap:12px;color:var(--silver)}
+/* ── LOADING / ERROR ── */
+.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:12px;color:var(--silver)}
 .spinner{width:28px;height:28px;border:2px solid var(--bone);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite}
+.bug-spin{border-top-color:var(--bug)}
+.imp-spin{border-top-color:var(--imp)}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-wrap p{font-size:.79rem}
-.err-box{margin:26px;padding:16px 20px;background:var(--red2);border:1px solid #ECC5C2;border-radius:var(--r);border-left:3px solid var(--red)}
+.err-box{margin:24px;padding:16px 20px;background:var(--red2);border:1px solid #ECC5C2;border-radius:var(--r);border-left:3px solid var(--red)}
 .err-box h3{color:var(--red);font-size:.84rem;margin-bottom:6px;font-weight:600}
 .err-box pre{font-size:.69rem;color:#7B2A23;white-space:pre-wrap;word-break:break-word;margin-top:8px;line-height:1.6}
-.load-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin:20px 28px}
-.ls-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:7px;background:var(--linen);border:1px solid var(--brd);font-size:.77rem}
+.load-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;margin-bottom:20px}
+.ls-row{display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:7px;background:var(--linen);border:1px solid var(--brd);font-size:.77rem}
 .ls-icon{width:16px;height:16px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px}
 .ls-icon.spinning{border:2px solid var(--bone);border-top-color:var(--brand);animation:spin .7s linear infinite}
-.ls-icon.ok{background:var(--green2);color:var(--pass)}
-.ls-icon.err{background:var(--red2);color:var(--red)}
-.ls-name{font-weight:600;color:var(--ink);flex:1;font-size:.73rem}
-.ls-msg{color:var(--mid);font-size:.69rem}
-.ls-msg.error{color:var(--red)}
+.ls-icon.ok{background:var(--green2);color:var(--pass)}.ls-icon.err{background:var(--red2);color:var(--red)}
+.ls-name{font-weight:600;color:var(--ink);flex:1;font-size:.72rem}
+.ls-msg{color:var(--mid);font-size:.68rem}.ls-msg.error{color:var(--red)}
 
 @media(max-width:860px){
-  .hdr,.tab-bar{padding-left:14px;padding-right:14px}
+  .hdr,.super-bar,.tab-bar{padding-left:14px;padding-right:14px}
   .content{margin-left:0;margin-right:0}
   .sw{padding:16px 14px}
   .kpi{min-width:80px;padding:12px 14px}
@@ -152,6 +207,7 @@ tbody tr:hover{background:var(--paper)!important}
 </head>
 <body>
 
+<!-- HEADER -->
 <div class="hdr">
   <div class="hdr-brand">
     <img src="tejas.gif" class="hdr-logo" alt="Zolve"/>
@@ -170,147 +226,169 @@ tbody tr:hover{background:var(--paper)!important}
   </div>
 </div>
 
-<div class="kpi-bar">
-  <div class="kpi k-total"><div class="kn" id="k-total">—</div><div class="kl">Total TCs</div></div>
-  <div class="kpi k-pass"> <div class="kn" id="k-pass">—</div> <div class="kl">✓ Passed</div></div>
-  <div class="kpi k-fail"> <div class="kn" id="k-fail">—</div> <div class="kl">✗ Failed</div></div>
-  <div class="kpi k-na">   <div class="kn" id="k-na">—</div>   <div class="kl">— Not Run</div></div>
-  <div class="kpi k-prog"> <div class="kn" id="k-prog">—</div> <div class="kl">% Progress</div></div>
-  <div class="kpi k-crit"> <div class="kn" id="k-crit">—</div> <div class="kl">🔴 Critical</div></div>
-  <div class="kpi k-high"> <div class="kn" id="k-high">—</div> <div class="kl">🟠 High</div></div>
+<!-- SUPER TABS -->
+<div class="super-bar">
+  <div class="super-tab tc-super active" id="st-tc" onclick="switchSuper('tc')">
+    Test Cases <span class="st-badge" id="stb-tc">—</span>
+  </div>
+  <div class="super-tab bug-super" id="st-bug" onclick="switchSuper('bug')">
+    Bugs <span class="st-dot" style="background:#F87171"></span><span class="st-badge" id="stb-bug">—</span>
+  </div>
+  <div class="super-tab imp-super" id="st-imp" onclick="switchSuper('imp')">
+    Improvements <span class="st-dot" style="background:#6EE7B7"></span><span class="st-badge" id="stb-imp">—</span>
+  </div>
 </div>
 
-<div class="tab-bar">
-  <div class="tab active" onclick="showTab(this,'summary')">Summary</div>
-  <div class="tab" onclick="showTab(this,'ps')">Phone Signup <span class="tab-badge" id="tb-ps">—</span></div>
-  <div class="tab" onclick="showTab(this,'pl')">Phone Login <span class="tab-badge" id="tb-pl">—</span></div>
-  <div class="tab" onclick="showTab(this,'el')">Email Linking <span class="tab-badge" id="tb-el">—</span></div>
-  <div class="tab" onclick="showTab(this,'pw')">Password Setup <span class="tab-badge" id="tb-pw">—</span></div>
-  <div class="tab" onclick="showTab(this,'mg')">Migration <span class="tab-badge" id="tb-mg">—</span></div>
-  <div class="tab" onclick="showTab(this,'da')">Decision API <span class="tab-badge" id="tb-da">—</span></div>
-  <div class="tab" onclick="showTab(this,'sc')">Security <span class="tab-badge" id="tb-sc">—</span></div>
-  <div class="tab" onclick="showTab(this,'ux')">UI / UX <span class="tab-badge" id="tb-ux">—</span></div>
-  <div class="tab" onclick="showTab(this,'ar')">Auth OTP Resend <span class="tab-badge" id="tb-ar">—</span></div>
+<!-- ═══════════════ TEST CASES SECTION ═══════════════ -->
+<div id="sec-tc">
+  <div class="kpi-bar">
+    <div class="kpi k-total"><div class="kn" id="k-total">—</div><div class="kl">Total TCs</div></div>
+    <div class="kpi k-pass"> <div class="kn" id="k-pass">—</div> <div class="kl">✓ Passed</div></div>
+    <div class="kpi k-fail"> <div class="kn" id="k-fail">—</div> <div class="kl">✗ Failed</div></div>
+    <div class="kpi k-na">   <div class="kn" id="k-na">—</div>   <div class="kl">— Not Run</div></div>
+    <div class="kpi k-prog"> <div class="kn" id="k-prog">—</div> <div class="kl">% Progress</div></div>
+    <div class="kpi k-crit"> <div class="kn" id="k-crit">—</div> <div class="kl">🔴 Critical</div></div>
+    <div class="kpi k-high"> <div class="kn" id="k-high">—</div> <div class="kl">🟠 High</div></div>
+  </div>
+  <div class="tab-bar tc-tabs" id="tabs-tc">
+    <div class="tab active" onclick="showTab(this,'tc','summary')">Summary</div>
+    <div class="tab" onclick="showTab(this,'tc','ps')">Phone Signup <span class="tab-badge" id="tb-ps">—</span></div>
+    <div class="tab" onclick="showTab(this,'tc','pl')">Phone Login <span class="tab-badge" id="tb-pl">—</span></div>
+    <div class="tab" onclick="showTab(this,'tc','el')">Email Linking <span class="tab-badge" id="tb-el">—</span></div>
+    <div class="tab" onclick="showTab(this,'tc','pw')">Password Setup <span class="tab-badge" id="tb-pw">—</span></div>
+    <div class="tab" onclick="showTab(this,'tc','mg')">Migration <span class="tab-badge" id="tb-mg">—</span></div>
+    <div class="tab" onclick="showTab(this,'tc','da')">Decision API <span class="tab-badge" id="tb-da">—</span></div>
+    <div class="tab" onclick="showTab(this,'tc','sc')">Security <span class="tab-badge" id="tb-sc">—</span></div>
+    <div class="tab" onclick="showTab(this,'tc','ux')">UI / UX <span class="tab-badge" id="tb-ux">—</span></div>
+    <div class="tab" onclick="showTab(this,'tc','ar')">Auth OTP Resend <span class="tab-badge" id="tb-ar">—</span></div>
+  </div>
+  <div class="content" id="content-tc">
+    <div class="pane active" id="pane-tc-summary">
+      <div class="sw"><div class="sw-hdr"><h2>Test Execution Summary</h2><span id="tc-sum-ts">Loading…</span></div>
+      <div id="tc-sum-body"><div class="load-grid" id="tc-load-grid"></div><div class="loading-wrap"><div class="spinner"></div><p>Connecting to Google Sheets…</p></div></div></div>
+    </div>
+    <div class="pane" id="pane-tc-ps"><div class="fb tc-fb"><label>Status:</label><select id="f-ps-s" onchange="applyTCFilter('ps')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-ps-p" onchange="applyTCFilter('ps')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-ps-q" placeholder="Search…" oninput="applyTCFilter('ps')"/><span class="fc" id="c-ps"></span></div><div class="tbl-wrap" id="wrap-ps"></div></div>
+    <div class="pane" id="pane-tc-pl"><div class="fb tc-fb"><label>Status:</label><select id="f-pl-s" onchange="applyTCFilter('pl')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-pl-p" onchange="applyTCFilter('pl')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-pl-q" placeholder="Search…" oninput="applyTCFilter('pl')"/><span class="fc" id="c-pl"></span></div><div class="tbl-wrap" id="wrap-pl"></div></div>
+    <div class="pane" id="pane-tc-el"><div class="fb tc-fb"><label>Status:</label><select id="f-el-s" onchange="applyTCFilter('el')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-el-p" onchange="applyTCFilter('el')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-el-q" placeholder="Search…" oninput="applyTCFilter('el')"/><span class="fc" id="c-el"></span></div><div class="tbl-wrap" id="wrap-el"></div></div>
+    <div class="pane" id="pane-tc-pw"><div class="fb tc-fb"><label>Status:</label><select id="f-pw-s" onchange="applyTCFilter('pw')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-pw-p" onchange="applyTCFilter('pw')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-pw-q" placeholder="Search…" oninput="applyTCFilter('pw')"/><span class="fc" id="c-pw"></span></div><div class="tbl-wrap" id="wrap-pw"></div></div>
+    <div class="pane" id="pane-tc-mg"><div class="fb tc-fb"><label>Status:</label><select id="f-mg-s" onchange="applyTCFilter('mg')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-mg-p" onchange="applyTCFilter('mg')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-mg-q" placeholder="Search…" oninput="applyTCFilter('mg')"/><span class="fc" id="c-mg"></span></div><div class="tbl-wrap" id="wrap-mg"></div></div>
+    <div class="pane" id="pane-tc-da"><div class="fb tc-fb"><label>Status:</label><select id="f-da-s" onchange="applyTCFilter('da')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-da-p" onchange="applyTCFilter('da')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-da-q" placeholder="Search…" oninput="applyTCFilter('da')"/><span class="fc" id="c-da"></span></div><div class="tbl-wrap" id="wrap-da"></div></div>
+    <div class="pane" id="pane-tc-sc"><div class="fb tc-fb"><label>Status:</label><select id="f-sc-s" onchange="applyTCFilter('sc')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-sc-p" onchange="applyTCFilter('sc')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-sc-q" placeholder="Search…" oninput="applyTCFilter('sc')"/><span class="fc" id="c-sc"></span></div><div class="tbl-wrap" id="wrap-sc"></div></div>
+    <div class="pane" id="pane-tc-ux"><div class="fb tc-fb"><label>Status:</label><select id="f-ux-s" onchange="applyTCFilter('ux')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-ux-p" onchange="applyTCFilter('ux')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-ux-q" placeholder="Search…" oninput="applyTCFilter('ux')"/><span class="fc" id="c-ux"></span></div><div class="tbl-wrap" id="wrap-ux"></div></div>
+    <div class="pane" id="pane-tc-ar"><div class="fb tc-fb"><label>Status:</label><select id="f-ar-s" onchange="applyTCFilter('ar')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-ar-p" onchange="applyTCFilter('ar')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-ar-q" placeholder="Search…" oninput="applyTCFilter('ar')"/><span class="fc" id="c-ar"></span></div><div class="tbl-wrap" id="wrap-ar"></div></div>
+  </div>
 </div>
 
-<div class="content">
-
-  <div class="pane active" id="pane-summary">
-    <div class="sw">
-      <div class="sw-hdr"><h2>Test Execution Summary — Passwordless V5</h2><span id="sum-ts">Loading…</span></div>
-      <div id="sum-area">
-        <div class="load-grid" id="load-grid"></div>
-        <div class="loading-wrap" id="init-spinner"><div class="spinner"></div><p>Connecting to Google Sheets…</p></div>
-      </div>
+<!-- ═══════════════ BUGS SECTION ═══════════════ -->
+<div id="sec-bug" style="display:none">
+  <div class="kpi-bar">
+    <div class="kpi bk-total"><div class="kn" id="bk-total">—</div><div class="kl">Total Bugs</div></div>
+    <div class="kpi bk-crit"> <div class="kn" id="bk-crit">—</div> <div class="kl">🔴 Critical</div></div>
+    <div class="kpi bk-high"> <div class="kn" id="bk-high">—</div> <div class="kl">🟠 High</div></div>
+    <div class="kpi bk-med">  <div class="kn" id="bk-med">—</div>  <div class="kl">🔵 Medium</div></div>
+    <div class="kpi bk-open"> <div class="kn" id="bk-open">—</div> <div class="kl">Open</div></div>
+    <div class="kpi bk-fixed"><div class="kn" id="bk-fixed">—</div><div class="kl">Fixed</div></div>
+  </div>
+  <div class="tab-bar bug-tabs" id="tabs-bug">
+    <div class="tab active" onclick="showTab(this,'bug','summary')">Summary</div>
+    <div class="tab" onclick="showTab(this,'bug','all')">All Bugs <span class="tab-badge" id="tb-bug-all">—</span></div>
+  </div>
+  <div class="content bug-content" id="content-bug">
+    <div class="pane active" id="pane-bug-summary">
+      <div class="sw"><div class="sw-hdr"><h2>Bug Report Summary</h2><span id="bug-sum-ts">Loading…</span></div>
+      <div id="bug-sum-body"><div class="loading-wrap"><div class="spinner bug-spin"></div><p>Loading bugs…</p></div></div></div>
+    </div>
+    <div class="pane" id="pane-bug-all">
+      <div class="fb bug-fb"><label>Severity:</label><select id="f-bug-sev" onchange="applyBugFilter()"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><label>Status:</label><select id="f-bug-status" onchange="applyBugFilter()"><option value="">All</option><option value="open">Open</option><option value="fixed">Fixed</option></select><input id="f-bug-q" placeholder="Search…" oninput="applyBugFilter()"/><span class="fc" id="c-bug-all"></span></div>
+      <div class="tbl-wrap" id="wrap-bug-all"></div>
     </div>
   </div>
+</div>
 
-  <div class="pane" id="pane-ps">
-    <div class="fb"><label>Status:</label><select id="f-ps-s" onchange="applyFilter('ps')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-ps-p" onchange="applyFilter('ps')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><label>Category:</label><select id="f-ps-c" onchange="applyFilter('ps')"><option value="">All</option><option value="happy path">Happy Path</option><option value="otp handling">OTP Handling</option></select><input id="f-ps-q" placeholder="Search…" oninput="applyFilter('ps')"/><span class="fc" id="c-ps"></span></div>
-    <div class="tbl-wrap" id="wrap-ps"></div>
+<!-- ═══════════════ IMPROVEMENTS SECTION ═══════════════ -->
+<div id="sec-imp" style="display:none">
+  <div class="kpi-bar">
+    <div class="kpi ik-total"><div class="kn" id="ik-total">—</div><div class="kl">Total Items</div></div>
+    <div class="kpi ik-high"> <div class="kn" id="ik-high">—</div> <div class="kl">🟠 High</div></div>
+    <div class="kpi ik-med">  <div class="kn" id="ik-med">—</div>  <div class="kl">🔵 Medium</div></div>
+    <div class="kpi ik-low">  <div class="kn" id="ik-low">—</div>  <div class="kl">🟢 Low</div></div>
+    <div class="kpi ik-open"> <div class="kn" id="ik-open">—</div> <div class="kl">Open</div></div>
+    <div class="kpi ik-done"> <div class="kn" id="ik-done">—</div> <div class="kl">Done</div></div>
   </div>
-
-  <div class="pane" id="pane-pl">
-    <div class="fb"><label>Status:</label><select id="f-pl-s" onchange="applyFilter('pl')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-pl-p" onchange="applyFilter('pl')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-pl-q" placeholder="Search…" oninput="applyFilter('pl')"/><span class="fc" id="c-pl"></span></div>
-    <div class="tbl-wrap" id="wrap-pl"></div>
+  <div class="tab-bar imp-tabs" id="tabs-imp">
+    <div class="tab active" onclick="showTab(this,'imp','summary')">Summary</div>
+    <div class="tab" onclick="showTab(this,'imp','all')">All Improvements <span class="tab-badge" id="tb-imp-all">—</span></div>
   </div>
-
-  <div class="pane" id="pane-el">
-    <div class="fb"><label>Status:</label><select id="f-el-s" onchange="applyFilter('el')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-el-p" onchange="applyFilter('el')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-el-q" placeholder="Search…" oninput="applyFilter('el')"/><span class="fc" id="c-el"></span></div>
-    <div class="tbl-wrap" id="wrap-el"></div>
+  <div class="content imp-content" id="content-imp">
+    <div class="pane active" id="pane-imp-summary">
+      <div class="sw"><div class="sw-hdr"><h2>Improvements Summary</h2><span id="imp-sum-ts">Loading…</span></div>
+      <div id="imp-sum-body"><div class="loading-wrap"><div class="spinner imp-spin"></div><p>Loading improvements…</p></div></div></div>
+    </div>
+    <div class="pane" id="pane-imp-all">
+      <div class="fb imp-fb"><label>Priority:</label><select id="f-imp-pri" onchange="applyImpFilter()"><option value="">All</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><label>Status:</label><select id="f-imp-status" onchange="applyImpFilter()"><option value="">All</option><option value="open">Open</option><option value="done">Done</option></select><input id="f-imp-q" placeholder="Search…" oninput="applyImpFilter()"/><span class="fc" id="c-imp-all"></span></div>
+      <div class="tbl-wrap" id="wrap-imp-all"></div>
+    </div>
   </div>
-
-  <div class="pane" id="pane-pw">
-    <div class="fb"><label>Status:</label><select id="f-pw-s" onchange="applyFilter('pw')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-pw-p" onchange="applyFilter('pw')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-pw-q" placeholder="Search…" oninput="applyFilter('pw')"/><span class="fc" id="c-pw"></span></div>
-    <div class="tbl-wrap" id="wrap-pw"></div>
-  </div>
-
-  <div class="pane" id="pane-mg">
-    <div class="fb"><label>Status:</label><select id="f-mg-s" onchange="applyFilter('mg')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-mg-p" onchange="applyFilter('mg')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-mg-q" placeholder="Search…" oninput="applyFilter('mg')"/><span class="fc" id="c-mg"></span></div>
-    <div class="tbl-wrap" id="wrap-mg"></div>
-  </div>
-
-  <div class="pane" id="pane-da">
-    <div class="fb"><label>Status:</label><select id="f-da-s" onchange="applyFilter('da')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-da-p" onchange="applyFilter('da')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-da-q" placeholder="Search…" oninput="applyFilter('da')"/><span class="fc" id="c-da"></span></div>
-    <div class="tbl-wrap" id="wrap-da"></div>
-  </div>
-
-  <div class="pane" id="pane-sc">
-    <div class="fb"><label>Status:</label><select id="f-sc-s" onchange="applyFilter('sc')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-sc-p" onchange="applyFilter('sc')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-sc-q" placeholder="Search…" oninput="applyFilter('sc')"/><span class="fc" id="c-sc"></span></div>
-    <div class="tbl-wrap" id="wrap-sc"></div>
-  </div>
-
-  <div class="pane" id="pane-ux">
-    <div class="fb"><label>Status:</label><select id="f-ux-s" onchange="applyFilter('ux')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-ux-p" onchange="applyFilter('ux')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-ux-q" placeholder="Search…" oninput="applyFilter('ux')"/><span class="fc" id="c-ux"></span></div>
-    <div class="tbl-wrap" id="wrap-ux"></div>
-  </div>
-
-  <div class="pane" id="pane-ar">
-    <div class="fb"><label>Status:</label><select id="f-ar-s" onchange="applyFilter('ar')"><option value="">All</option><option value="pass">Pass</option><option value="fail">Fail</option><option value="na">Not Run</option></select><label>Priority:</label><select id="f-ar-p" onchange="applyFilter('ar')"><option value="">All</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><input id="f-ar-q" placeholder="Search…" oninput="applyFilter('ar')"/><span class="fc" id="c-ar"></span></div>
-    <div class="tbl-wrap" id="wrap-ar"></div>
-  </div>
-
 </div>
 
 <script>
 // ── CONFIG ─────────────────────────────────────────────────────────────────────
-const PUB  = '2PACX-1vShtBY3xjXKFKYdPjDo0CiZ4WU9BsV8RFhHbS-dzynZrqjtwU2qosBH8_DvfGN4mnuQyzD-UNwunztF';
-const SID  = '16AeBt2K2LYjwdddum46rI2d-cGvT26gfFYBfWi9B5us';
+const PUB = '2PACX-1vShtBY3xjXKFKYdPjDo0CiZ4WU9BsV8RFhHbS-dzynZrqjtwU2qosBH8_DvfGN4mnuQyzD-UNwunztF';
+const SID = '16AeBt2K2LYjwdddum46rI2d-cGvT26gfFYBfWi9B5us';
 
-// Each section: key, tab label, sheet GID, sheet name for gviz fallback
-const SHEETS = [
-  {key:'ps', label:'Phone Signup (New User)',       gid:'51911004',   name:'Phone Signup (New User)',       desc:'New user phone OTP signup, resend & rate limits'},
-  {key:'pl', label:'Phone Login (Existing User)',   gid:'784941435',  name:'Phone Login (Existing User)',   desc:'Existing user phone OTP login, path differentiation'},
-  {key:'el', label:'Email Linking (Post-Signup)',   gid:'116640341',  name:'Email Linking (Post-Signup)',   desc:'Post-signup email / social identity linking'},
-  {key:'pw', label:'Password Setup',                gid:'1139865990', name:'Password Setup',                desc:'Password creation, validation rules, edge cases'},
-  {key:'mg', label:'Migration - Old Users',         gid:'1851726893', name:'Migration - Old Users',         desc:'Old user migration, legacy flow regression'},
-  {key:'da', label:'Decision API + Flow Control',   gid:'1347584169', name:'Decision API + Flow Control',   desc:'Flow control, drop-off recovery'},
-  {key:'sc', label:'Security',                      gid:'1632613336', name:'Security',                      desc:'Blacklists, VOIP, country blocks, expired tokens'},
-  {key:'ux', label:'UI - UX',                       gid:'2129088770', name:'UI - UX',                       desc:'Timer, country picker, referral, attribution'},
-  {key:'ar', label:'Auth OTP Resend',               gid:'1011553218', name:'Auth OTP Resend',               desc:'Auth context resend, expired request_id'},
+const TC_SHEETS = [
+  {key:'ps', label:'Phone Signup (New User)',     gid:'51911004',   name:'Phone Signup (New User)',     desc:'New user phone OTP signup, resend & rate limits'},
+  {key:'pl', label:'Phone Login (Existing User)', gid:'784941435',  name:'Phone Login (Existing User)', desc:'Existing user login, path differentiation'},
+  {key:'el', label:'Email Linking (Post-Signup)', gid:'116640341',  name:'Email Linking (Post-Signup)', desc:'Post-signup email / social identity linking'},
+  {key:'pw', label:'Password Setup',              gid:'1139865990', name:'Password Setup',              desc:'Password creation, validation rules, edge cases'},
+  {key:'mg', label:'Migration - Old Users',       gid:'1851726893', name:'Migration - Old Users',       desc:'Old user migration, legacy flow regression'},
+  {key:'da', label:'Decision API + Flow Control', gid:'1347584169', name:'Decision API + Flow Control', desc:'Flow control, drop-off recovery'},
+  {key:'sc', label:'Security',                    gid:'1632613336', name:'Security',                    desc:'Blacklists, VOIP, country blocks, expired tokens'},
+  {key:'ux', label:'UI - UX',                     gid:'2129088770', name:'UI - UX',                     desc:'Timer, country picker, referral, attribution'},
+  {key:'ar', label:'Auth OTP Resend',             gid:'1011553218', name:'Auth OTP Resend',             desc:'Auth context resend, expired request_id'},
 ];
 
+// User needs to share GIDs for Bugs and Improvements sheets —
+// using sheet name via gviz as primary, with published URL fallbacks
+const BUG_GID = ''; // fill in if known e.g. '12345678'
+const IMP_GID = ''; // fill in if known
+
 const PROXIES = [
-  u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-  u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-  u => `https://thingproxy.freeboard.io/fetch/${u}`,
+  u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
+  u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  u=>`https://thingproxy.freeboard.io/fetch/${u}`,
 ];
 
 // ── STATE ──────────────────────────────────────────────────────────────────────
-const data = {}; // key -> parsed rows (data only, no header)
+const tcData = {};
+let bugRows = [];
+let impRows = [];
 
-// ── TAB SWITCHING ──────────────────────────────────────────────────────────────
-function showTab(el, key){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+// ── SUPER TAB SWITCH ───────────────────────────────────────────────────────────
+function switchSuper(which){
+  ['tc','bug','imp'].forEach(s=>{
+    document.getElementById('sec-'+s).style.display = s===which?'':'none';
+    document.getElementById('st-'+s).classList.toggle('active', s===which);
+  });
+}
+
+// ── SUB TAB SWITCH ─────────────────────────────────────────────────────────────
+function showTab(el, section, key){
+  el.closest('.tab-bar').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
-  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
-  const p=document.getElementById('pane-'+key);
-  if(p)p.classList.add('active');
+  document.getElementById('content-'+section).querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pane-'+section+'-'+key).classList.add('active');
 }
 
 // ── CSV PARSER ─────────────────────────────────────────────────────────────────
 function parseCSV(text){
-  const rows=[];
-  const s=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  const rows=[];const s=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
   let i=0,n=s.length;
   while(i<n){
     const row=[];
     while(i<n&&s[i]!=='\n'){
-      if(s[i]==='"'){
-        i++;let c='';
-        while(i<n){
-          if(s[i]==='"'&&s[i+1]==='"'){c+='"';i+=2;}
-          else if(s[i]==='"'){i++;break;}
-          else c+=s[i++];
-        }
-        row.push(c);
-        if(i<n&&s[i]===',')i++;
-      } else {
-        let c='';
-        while(i<n&&s[i]!==','&&s[i]!=='\n')c+=s[i++];
-        row.push(c);
-        if(i<n&&s[i]===',')i++;
-      }
+      if(s[i]==='"'){i++;let c='';while(i<n){if(s[i]==='"'&&s[i+1]==='"'){c+='"';i+=2;}else if(s[i]==='"'){i++;break;}else c+=s[i++];}row.push(c);if(i<n&&s[i]===',')i++;}
+      else{let c='';while(i<n&&s[i]!==','&&s[i]!=='\n')c+=s[i++];row.push(c);if(i<n&&s[i]===',')i++;}
     }
     if(i<n)i++;
     if(row.length>0&&!(row.length===1&&row[0]===''))rows.push(row);
@@ -318,150 +396,143 @@ function parseCSV(text){
   return rows;
 }
 
-// ── FETCH ONE SHEET ────────────────────────────────────────────────────────────
-async function fetchSheet(gid, name){
-  const pubUrl  = `https://docs.google.com/spreadsheets/d/e/${PUB}/pub?gid=${gid}&single=true&output=csv`;
-  const gvizUrl = `https://docs.google.com/spreadsheets/d/${SID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(name)}`;
-
+// ── FETCH SHEET ────────────────────────────────────────────────────────────────
+async function fetchSheet(gid, name, rowValidator){
+  const pub  = `https://docs.google.com/spreadsheets/d/e/${PUB}/pub?gid=${gid}&single=true&output=csv`;
+  const gviz = `https://docs.google.com/spreadsheets/d/${SID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(name)}`;
   const attempts = [
-    pubUrl,
-    gvizUrl,
-    ...PROXIES.map(p=>p(pubUrl)),
-    ...PROXIES.map(p=>p(gvizUrl)),
+    ...(gid ? [pub] : []),
+    gviz,
+    ...(gid ? PROXIES.map(p=>p(pub)) : []),
+    ...PROXIES.map(p=>p(gviz)),
   ];
-
   const errs=[];
   for(const url of attempts){
     try{
       const r=await fetch(url,{cache:'no-store'});
       if(!r.ok)throw new Error('HTTP '+r.status);
       const t=await r.text();
-      if(t.trim().startsWith('<')||t.trim().length<10)throw new Error('Got HTML or empty');
+      if(t.trim().startsWith('<')||t.trim().length<10)throw new Error('HTML or empty response');
       const rows=parseCSV(t);
-      // Find header row (has "Test ID" in col 0), return everything after it
-      const hi=rows.findIndex(r=>(r[0]||'').trim()==='Test ID');
+      const hi=rows.findIndex(r=>rowValidator(r));
       if(hi===-1)throw new Error('Header row not found');
-      const dataRows=rows.slice(hi+1).filter(r=>(r[0]||'').trim().match(/^TC-\d+/));
-      if(dataRows.length===0)throw new Error('No TC rows found');
-      return dataRows;
-    } catch(e){errs.push(e.message);}
+      return rows.slice(hi+1);
+    }catch(e){errs.push(e.message);}
   }
-  throw new Error(errs.join(' | '));
+  throw new Error(errs.slice(0,3).join(' | '));
 }
 
 // ── HELPERS ────────────────────────────────────────────────────────────────────
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function priKey(p){const s=(p||'').toLowerCase();if(s.includes('critical'))return'critical';if(s.includes('high'))return'high';if(s.includes('med'))return'medium';return'low';}
+function statusKey(s){const v=(s||'').trim().toLowerCase();return v==='pass'?'pass':v==='fail'?'fail':'na';}
+function isFixed(s){const v=(s||'').trim().toLowerCase();return v==='fixed'||v==='done'||v==='closed';}
+function catKey(c){const s=(c||'').toLowerCase();if(s.includes('happy'))return'happy';if(s.includes('otp'))return'otp';if(s.includes('security')||s==='sec')return'sec';if(s.includes('edge'))return'edge';if(s.includes('valid'))return'val';if(s.includes('flow'))return'flow';if(s.includes('regress'))return'reg';if(s.includes('migrat'))return'mig';if(s.includes('ui'))return'ui';return'edge';}
+function priBadge(p){const k=priKey(p);const lbl={critical:'🔴 Critical',high:'🟠 High',medium:'🔵 Medium',low:'🟢 Low'};const cls={critical:'p-crit',high:'p-high',medium:'p-med',low:'p-low'};return`<span class="pri ${cls[k]}">${lbl[k]}</span>`;}
+function statBadge(s){const k=statusKey(s);const lbl={pass:'Pass',fail:'Fail',na:'Not Run'};const cls={pass:'s-pass',fail:'s-fail',na:'s-na'};return`<span class="status-badge ${cls[k]}">${lbl[k]}</span>`;}
+function catBadge(c){const k=catKey(c);const cls={happy:'c-happy',otp:'c-otp',sec:'c-sec',edge:'c-edge',val:'c-val',flow:'c-flow',reg:'c-reg',mig:'c-mig',ui:'c-ui'};return`<span class="cat ${cls[k]||'c-edge'}">${esc(c)}</span>`;}
+function bugStatBadge(s){return isFixed(s)?'<span class="bug-fixed">Fixed</span>':'<span class="bug-open">Open</span>';}
+function impStatBadge(s){return isFixed(s)?'<span class="imp-done">Done</span>':'<span class="imp-open">Open</span>';}
 
-function priKey(p){
-  const s=(p||'').toLowerCase();
-  if(s.includes('critical'))return'critical';
-  if(s.includes('high'))return'high';
-  if(s.includes('med'))return'medium';
-  return'low';
-}
-function statusKey(s){
-  const v=(s||'').trim().toLowerCase();
-  return v==='pass'?'pass':v==='fail'?'fail':'na';
-}
-function catKey(c){
-  const s=(c||'').toLowerCase();
-  if(s.includes('happy'))return'happy';
-  if(s.includes('otp'))return'otp';
-  if(s.includes('security')||s.includes('sec'))return'sec';
-  if(s.includes('edge'))return'edge';
-  if(s.includes('valid'))return'val';
-  if(s.includes('flow'))return'flow';
-  if(s.includes('regress'))return'reg';
-  if(s.includes('migrat'))return'mig';
-  if(s.includes('ui'))return'ui';
-  return'edge';
-}
-function priBadge(p){
-  const k=priKey(p);
-  const lbl={critical:'🔴 Critical',high:'🟠 High',medium:'🔵 Medium',low:'🟢 Low'};
-  const cls={critical:'p-crit',high:'p-high',medium:'p-med',low:'p-low'};
-  return `<span class="pri ${cls[k]}">${lbl[k]}</span>`;
-}
-function statBadge(s){
-  const k=statusKey(s);
-  const lbl={pass:'Pass',fail:'Fail',na:'Not Run'};
-  const cls={pass:'s-pass',fail:'s-fail',na:'s-na'};
-  return `<span class="status-badge ${cls[k]}">${lbl[k]}</span>`;
-}
-function catBadge(c){
-  const k=catKey(c);
-  const cls={happy:'c-happy',otp:'c-otp',sec:'c-sec',edge:'c-edge',val:'c-val',flow:'c-flow',reg:'c-reg',mig:'c-mig',ui:'c-ui'};
-  return `<span class="cat ${cls[k]||'c-edge'}">${esc(c)}</span>`;
-}
-
-// cols: 0=TestID 1=Title 2=Priority 3=Category 4=Precondition 5=Steps 6=Expected 7=DB/Redis 8=Status
-function buildTable(rows, key){
-  if(!rows||rows.length===0) return {html:'<div class="loading-wrap"><p style="color:var(--silver)">No test cases in this section.</p></div>',count:0};
-  let html=`<table><thead><tr>
-    <th>TC ID</th><th>Status</th><th style="min-width:230px">Test Case Title</th>
-    <th>Priority</th><th>Category</th><th style="min-width:150px">Precondition</th>
-    <th style="min-width:210px">Steps</th><th style="min-width:190px">Expected Result</th>
-    <th style="min-width:190px">DB / Redis Validation</th>
-  </tr></thead><tbody id="body-${key}">`;
+// ── TC TABLE (cols: 0=ID 1=Title 2=Priority 3=Category 4=Precondition 5=Steps 6=Expected 7=DB 8=Status) ──
+function buildTCTable(rows, key){
+  if(!rows||!rows.length)return{html:'<div class="loading-wrap"><p style="color:var(--silver)">No test cases.</p></div>',count:0};
+  let html=`<table><thead><tr class="tc-thead"><th>TC ID</th><th>Status</th><th style="min-width:220px">Title</th><th>Priority</th><th>Category</th><th style="min-width:140px">Precondition</th><th style="min-width:200px">Steps</th><th style="min-width:180px">Expected Result</th><th style="min-width:180px">DB / Redis</th></tr></thead><tbody id="body-tc-${key}">`;
   rows.forEach((r,i)=>{
-    const id=(r[0]||'').trim();
-    const bg=i%2===0?'':'var(--paper)';
-    html+=`<tr style="background:${bg}"
-      data-s="${statusKey(r[8])}"
-      data-p="${priKey(r[2])}"
-      data-c="${(r[3]||'').toLowerCase()}"
-      data-q="${(id+' '+(r[1]||'')+' '+(r[3]||'')+' '+(r[4]||'')+' '+(r[5]||'')).toLowerCase()}">
-      <td class="tc-id">${esc(id)}</td>
-      <td>${statBadge(r[8])}</td>
+    const id=(r[0]||'').trim();if(!id.match(/^TC-/))return;
+    html+=`<tr style="background:${i%2?'var(--paper)':''}" data-s="${statusKey(r[8])}" data-p="${priKey(r[2])}" data-q="${(id+' '+(r[1]||'')+' '+(r[3]||'')+' '+(r[4]||'')).toLowerCase()}">
+      <td class="tc-id t">${esc(id)}</td><td>${statBadge(r[8])}</td>
       <td style="font-weight:500;font-size:.75rem">${esc(r[1])}</td>
-      <td>${priBadge(r[2])}</td>
-      <td>${catBadge(r[3])}</td>
+      <td>${priBadge(r[2])}</td><td>${catBadge(r[3])}</td>
       <td style="font-size:.7rem;color:var(--charcoal)">${esc(r[4])}</td>
-      <td class="steps">${esc(r[5])}</td>
-      <td class="exp">${esc(r[6])}</td>
-      <td class="dbnote">${esc(r[7])}</td>
-    </tr>`;
+      <td class="steps">${esc(r[5])}</td><td class="exp">${esc(r[6])}</td>
+      <td class="note">${esc(r[7])}</td></tr>`;
   });
-  return {html:html+'</tbody></table>',count:rows.length};
+  const count=rows.filter(r=>(r[0]||'').trim().match(/^TC-/)).length;
+  return{html:html+'</tbody></table>',count};
 }
 
-// ── FILTER ─────────────────────────────────────────────────────────────────────
-function applyFilter(key){
+// ── BUG TABLE (cols: 0=ID 1=Type 2=Title 3=Area 4=Severity 5=Steps 6=Expected 7=Actual 8=Notes) ──
+function buildBugTable(rows){
+  if(!rows||!rows.length)return{html:'<div class="loading-wrap"><p style="color:var(--silver)">No bugs.</p></div>',count:0};
+  let html=`<table><thead><tr class="bug-thead"><th>ID</th><th style="min-width:240px">Title</th><th>Area</th><th>Severity</th><th>Status</th><th style="min-width:200px">Steps to Reproduce</th><th style="min-width:180px">Expected</th><th style="min-width:180px">Actual</th><th style="min-width:160px">Notes</th></tr></thead><tbody id="body-bug-all">`;
+  rows.forEach((r,i)=>{
+    const id=(r[0]||'').trim();if(!id.match(/^BUG-/))return;
+    const sev=priKey(r[4]);const fixed=isFixed(r[9]||'');
+    html+=`<tr style="background:${i%2?'var(--paper)':''}" data-sev="${sev}" data-status="${fixed?'fixed':'open'}" data-q="${(id+' '+(r[2]||'')+' '+(r[3]||'')+' '+(r[5]||'')).toLowerCase()}">
+      <td class="tc-id b">${esc(id)}</td>
+      <td style="font-weight:500;font-size:.75rem">${esc(r[2])}</td>
+      <td style="font-size:.71rem;color:var(--charcoal)">${esc(r[3])}</td>
+      <td>${priBadge(r[4])}</td><td>${bugStatBadge(r[9]||'')}</td>
+      <td class="steps">${esc(r[5])}</td><td class="exp">${esc(r[6])}</td>
+      <td class="act">${esc(r[7])}</td><td class="note">${esc(r[8])}</td></tr>`;
+  });
+  const count=rows.filter(r=>(r[0]||'').trim().match(/^BUG-/)).length;
+  return{html:html+'</tbody></table>',count};
+}
+
+// ── IMP TABLE (cols: 0=ID 1=Type 2=Title 3=Area 4=Priority 5=Steps 6=Expected 7=Actual 8=Notes) ──
+function buildImpTable(rows){
+  if(!rows||!rows.length)return{html:'<div class="loading-wrap"><p style="color:var(--silver)">No improvements.</p></div>',count:0};
+  let html=`<table><thead><tr class="imp-thead"><th>ID</th><th style="min-width:240px">Title</th><th>Area</th><th>Priority</th><th>Status</th><th style="min-width:200px">Context / Steps</th><th style="min-width:190px">Expected Behaviour</th><th style="min-width:190px">Current Behaviour</th><th style="min-width:160px">Recommendation</th></tr></thead><tbody id="body-imp-all">`;
+  rows.forEach((r,i)=>{
+    const id=(r[0]||'').trim();if(!id.match(/^IMP-/))return;
+    const done=isFixed(r[9]||'');
+    html+=`<tr style="background:${i%2?'var(--paper)':''}" data-pri="${priKey(r[4])}" data-status="${done?'done':'open'}" data-q="${(id+' '+(r[2]||'')+' '+(r[3]||'')+' '+(r[5]||'')).toLowerCase()}">
+      <td class="tc-id i">${esc(id)}</td>
+      <td style="font-weight:500;font-size:.75rem">${esc(r[2])}</td>
+      <td style="font-size:.71rem;color:var(--charcoal)">${esc(r[3])}</td>
+      <td>${priBadge(r[4])}</td><td>${impStatBadge(r[9]||'')}</td>
+      <td class="steps">${esc(r[5])}</td><td class="exp">${esc(r[6])}</td>
+      <td class="act">${esc(r[7])}</td><td class="note">${esc(r[8])}</td></tr>`;
+  });
+  const count=rows.filter(r=>(r[0]||'').trim().match(/^IMP-/)).length;
+  return{html:html+'</tbody></table>',count};
+}
+
+// ── FILTERS ────────────────────────────────────────────────────────────────────
+function applyTCFilter(key){
   const g=id=>{const el=document.getElementById(id);return el?el.value.toLowerCase().trim():'';};
-  const sf=g('f-'+key+'-s'), pf=g('f-'+key+'-p'), cf=g('f-'+key+'-c'), tf=g('f-'+key+'-q');
-  const tb=document.getElementById('body-'+key);if(!tb)return;
+  const sf=g('f-'+key+'-s'),pf=g('f-'+key+'-p'),tf=g('f-'+key+'-q');
+  const tb=document.getElementById('body-tc-'+key);if(!tb)return;
   const rows=tb.querySelectorAll('tr');let shown=0,total=0;
-  rows.forEach(r=>{
-    total++;let v=true;
-    if(sf&&r.dataset.s!==sf)v=false;
-    if(pf&&r.dataset.p!==pf)v=false;
-    if(cf&&!r.dataset.c.includes(cf))v=false;
-    if(tf&&!r.dataset.q.includes(tf))v=false;
-    r.style.display=v?'':'none';if(v)shown++;
-  });
-  let idx=0;rows.forEach(r=>{if(r.style.display==='none')return;r.style.background=idx++%2===0?'':'var(--paper)';});
-  const c=document.getElementById('c-'+key);
-  if(c)c.textContent=shown===total?total+' test cases':'Showing '+shown+' of '+total;
+  rows.forEach(r=>{total++;let v=true;if(sf&&r.dataset.s!==sf)v=false;if(pf&&r.dataset.p!==pf)v=false;if(tf&&!r.dataset.q.includes(tf))v=false;r.style.display=v?'':'none';if(v)shown++;});
+  let idx=0;rows.forEach(r=>{if(r.style.display==='none')return;r.style.background=idx++%2?'var(--paper)':'';});
+  const c=document.getElementById('c-'+key);if(c)c.textContent=shown===total?total+' test cases':'Showing '+shown+' of '+total;
+}
+function applyBugFilter(){
+  const sf=(document.getElementById('f-bug-sev')||{}).value||'';
+  const stf=(document.getElementById('f-bug-status')||{}).value||'';
+  const tf=((document.getElementById('f-bug-q')||{}).value||'').toLowerCase();
+  const tb=document.getElementById('body-bug-all');if(!tb)return;
+  const rows=tb.querySelectorAll('tr');let shown=0,total=0;
+  rows.forEach(r=>{total++;let v=true;if(sf&&r.dataset.sev!==sf)v=false;if(stf&&r.dataset.status!==stf)v=false;if(tf&&!r.dataset.q.includes(tf))v=false;r.style.display=v?'':'none';if(v)shown++;});
+  let idx=0;rows.forEach(r=>{if(r.style.display==='none')return;r.style.background=idx++%2?'var(--paper)':'';});
+  const c=document.getElementById('c-bug-all');if(c)c.textContent=shown===total?total+' bugs':'Showing '+shown+' of '+total;
+}
+function applyImpFilter(){
+  const pf=(document.getElementById('f-imp-pri')||{}).value||'';
+  const stf=(document.getElementById('f-imp-status')||{}).value||'';
+  const tf=((document.getElementById('f-imp-q')||{}).value||'').toLowerCase();
+  const tb=document.getElementById('body-imp-all');if(!tb)return;
+  const rows=tb.querySelectorAll('tr');let shown=0,total=0;
+  rows.forEach(r=>{total++;let v=true;if(pf&&r.dataset.pri!==pf)v=false;if(stf&&r.dataset.status!==stf)v=false;if(tf&&!r.dataset.q.includes(tf))v=false;r.style.display=v?'':'none';if(v)shown++;});
+  let idx=0;rows.forEach(r=>{if(r.style.display==='none')return;r.style.background=idx++%2?'var(--paper)':'';});
+  const c=document.getElementById('c-imp-all');if(c)c.textContent=shown===total?total+' items':'Showing '+shown+' of '+total;
 }
 
-// ── SUMMARY ────────────────────────────────────────────────────────────────────
-function buildSummary(){
+// ── SUMMARY BUILDERS ───────────────────────────────────────────────────────────
+function buildTCSummary(){
   let tot=0,tp=0,tf=0,tn=0,tcrit=0,thigh=0;
   const stats={};
-  SHEETS.forEach(({key,label,desc})=>{
-    const rows=data[key]||[];
+  TC_SHEETS.forEach(({key,label,desc})=>{
+    const rows=tcData[key]||[];
     let n=0,pass=0,fail=0,na=0,crit=0;
-    rows.forEach(r=>{
-      n++;
-      const sk=statusKey(r[8]),pk=priKey(r[2]);
-      if(sk==='pass')pass++;else if(sk==='fail')fail++;else na++;
-      if(pk==='critical')crit++;
-    });
+    rows.forEach(r=>{if(!(r[0]||'').trim().match(/^TC-/))return;n++;const sk=statusKey(r[8]),pk=priKey(r[2]);if(sk==='pass')pass++;else if(sk==='fail')fail++;else na++;if(pk==='critical')crit++;});
     stats[key]={n,pass,fail,na,crit,label,desc};
     tot+=n;tp+=pass;tf+=fail;tn+=na;tcrit+=crit;
-    thigh+=rows.filter(r=>priKey(r[2])==='high').length;
+    thigh+=(rows.filter(r=>priKey(r[2])==='high')).length;
   });
-
   const prog=tot>0?Math.round((tp+tf)/tot*100):0;
   document.getElementById('k-total').textContent=tot;
   document.getElementById('k-pass').textContent=tp;
@@ -470,129 +541,168 @@ function buildSummary(){
   document.getElementById('k-prog').textContent=prog+'%';
   document.getElementById('k-crit').textContent=tcrit;
   document.getElementById('k-high').textContent=thigh;
+  document.getElementById('stb-tc').textContent=tot;
 
-  let html=`<table class="sum-t"><thead><tr>
-    <th>Section</th><th style="text-align:center"># TCs</th>
-    <th style="text-align:center">Pass</th><th style="text-align:center">Fail</th>
-    <th style="text-align:center">Not Run</th><th style="min-width:170px">Progress</th>
-    <th>Coverage</th>
-  </tr></thead><tbody>`;
-
-  SHEETS.forEach(({key})=>{
+  let html=`<div class="load-grid" id="tc-load-grid-done"></div><table class="sum-t"><thead><tr class="tc-sum-head"><th>Section</th><th style="text-align:center"># TCs</th><th style="text-align:center">Pass</th><th style="text-align:center">Fail</th><th style="text-align:center">Not Run</th><th style="min-width:160px">Progress</th><th>Coverage</th></tr></thead><tbody>`;
+  TC_SHEETS.forEach(({key})=>{
     const c=stats[key];if(!c||!c.n)return;
-    const pp=Math.round(c.pass/c.n*100), fp=Math.round(c.fail/c.n*100), np=100-pp-fp;
-    const pct=Math.round((c.pass+c.fail)/c.n*100);
-    html+=`<tr>
-      <td><strong>${c.label}</strong>${c.crit?` <span style="font-size:.61rem;color:var(--red);font-weight:600">${c.crit} crit</span>`:''}  </td>
-      <td style="text-align:center;font-weight:600">${c.n}</td>
+    const pp=Math.round(c.pass/c.n*100),fp=Math.round(c.fail/c.n*100),np=100-pp-fp,pct=Math.round((c.pass+c.fail)/c.n*100);
+    html+=`<tr><td><strong>${c.label}</strong></td><td style="text-align:center;font-weight:600">${c.n}</td>
       <td style="text-align:center">${c.pass?`<span class="status-badge s-pass">${c.pass}</span>`:'<span style="color:var(--silver)">—</span>'}</td>
       <td style="text-align:center">${c.fail?`<span class="status-badge s-fail">${c.fail}</span>`:'<span style="color:var(--silver)">—</span>'}</td>
       <td style="text-align:center">${c.na?`<span class="status-badge s-na">${c.na}</span>`:'<span style="color:var(--silver)">—</span>'}</td>
-      <td><div class="pb"><div class="pbr">
-        <div class="pbf pbf-p" style="width:${pp}%"></div>
-        <div class="pbf pbf-f" style="width:${fp}%;left:${pp}%"></div>
-        <div class="pbf pbf-n" style="width:${np}%;left:${pp+fp}%"></div>
-      </div><span class="pb-txt">${pct}% done</span></div></td>
-      <td style="font-size:.7rem;color:var(--silver);font-style:italic">${c.desc}</td>
-    </tr>`;
+      <td><div class="pb"><div class="pbr"><div class="pbf pbf-p" style="width:${pp}%"></div><div class="pbf pbf-f" style="width:${fp}%;left:${pp}%"></div><div class="pbf pbf-n" style="width:${np}%;left:${pp+fp}%"></div></div><span class="pb-txt">${pct}% done</span></div></td>
+      <td style="font-size:.7rem;color:var(--silver);font-style:italic">${c.desc}</td></tr>`;
   });
-
-  html+=`<tr class="tr-total">
-    <td><strong>TOTAL</strong></td>
-    <td style="text-align:center"><strong>${tot}</strong></td>
-    <td style="text-align:center"><strong>${tp}</strong></td>
-    <td style="text-align:center"><strong>${tf}</strong></td>
-    <td style="text-align:center"><strong>${tn}</strong></td>
-    <td><span class="pb-txt" style="color:#fff"><strong>${prog}% Complete</strong></span></td>
-    <td></td>
-  </tr></tbody></table>
-  <div class="legend">
-    <span class="legend-lbl">Status</span>
-    <div class="legend-item"><div class="ldot" style="background:var(--pass)"></div>Pass</div>
-    <div class="legend-item"><div class="ldot" style="background:var(--fail)"></div>Fail</div>
-    <div class="legend-item"><div class="ldot" style="background:var(--na)"></div>Not Run</div>
-    <span class="legend-lbl" style="margin-left:8px">Priority</span>
-    <div class="legend-item"><div class="ldot" style="background:var(--red)"></div>Critical</div>
-    <div class="legend-item"><div class="ldot" style="background:var(--amber)"></div>High</div>
-    <div class="legend-item"><div class="ldot" style="background:var(--blue)"></div>Medium</div>
-    <div class="legend-item"><div class="ldot" style="background:var(--pass)"></div>Low</div>
-  </div>`;
+  html+=`<tr class="tr-total"><td><strong>TOTAL</strong></td><td style="text-align:center"><strong>${tot}</strong></td><td style="text-align:center"><strong>${tp}</strong></td><td style="text-align:center"><strong>${tf}</strong></td><td style="text-align:center"><strong>${tn}</strong></td><td><span class="pb-txt" style="color:#fff"><strong>${prog}% Complete</strong></span></td><td></td></tr></tbody></table>
+  <div class="legend"><span class="legend-lbl">Status</span><div class="legend-item"><div class="ldot" style="background:var(--pass)"></div>Pass</div><div class="legend-item"><div class="ldot" style="background:var(--fail)"></div>Fail</div><div class="legend-item"><div class="ldot" style="background:var(--na)"></div>Not Run</div><span class="legend-lbl" style="margin-left:8px">Priority</span><div class="legend-item"><div class="ldot" style="background:var(--red)"></div>Critical</div><div class="legend-item"><div class="ldot" style="background:var(--amber)"></div>High</div><div class="legend-item"><div class="ldot" style="background:var(--blue)"></div>Medium</div><div class="legend-item"><div class="ldot" style="background:var(--pass)"></div>Low</div></div>`;
   return html;
 }
 
-// ── LOAD STATUS UI ─────────────────────────────────────────────────────────────
+function buildBugSummary(){
+  const areas={};let tot=0,tcrit=0,thigh=0,tmed=0,tlow=0,topen=0,tfixed=0;
+  bugRows.forEach(r=>{
+    const id=(r[0]||'').trim();if(!id.match(/^BUG-/))return;
+    const area=(r[3]||'Uncategorised').trim(),sev=priKey(r[4]),fixed=isFixed(r[9]||'');
+    if(!areas[area])areas[area]={n:0,critical:0,high:0,medium:0,low:0,open:0,fixed:0};
+    areas[area].n++;areas[area][sev]++;fixed?areas[area].fixed++:areas[area].open++;
+    tot++;if(sev==='critical')tcrit++;else if(sev==='high')thigh++;else if(sev==='medium')tmed++;else tlow++;
+    fixed?tfixed++:topen++;
+  });
+  document.getElementById('bk-total').textContent=tot;
+  document.getElementById('bk-crit').textContent=tcrit;
+  document.getElementById('bk-high').textContent=thigh;
+  document.getElementById('bk-med').textContent=tmed;
+  document.getElementById('bk-open').textContent=topen;
+  document.getElementById('bk-fixed').textContent=tfixed;
+  document.getElementById('stb-bug').textContent=tot;
+
+  let html=`<table class="sum-t"><thead><tr class="bug-sum-head"><th>Area</th><th style="text-align:center">Total</th><th style="text-align:center">Critical</th><th style="text-align:center">High</th><th style="text-align:center">Med</th><th style="text-align:center">Open</th><th style="text-align:center">Fixed</th><th style="min-width:140px">Resolution</th></tr></thead><tbody>`;
+  Object.entries(areas).sort((a,b)=>b[1].n-a[1].n).forEach(([area,c])=>{
+    const fp=c.n>0?Math.round(c.fixed/c.n*100):0;
+    html+=`<tr><td><strong>${esc(area)}</strong></td><td style="text-align:center;font-weight:600">${c.n}</td>
+      <td style="text-align:center">${c.critical?`<span class="pri p-crit">${c.critical}</span>`:'<span style="color:var(--silver)">—</span>'}</td>
+      <td style="text-align:center">${c.high?`<span class="pri p-high">${c.high}</span>`:'<span style="color:var(--silver)">—</span>'}</td>
+      <td style="text-align:center">${c.medium?`<span class="pri p-med">${c.medium}</span>`:'<span style="color:var(--silver)">—</span>'}</td>
+      <td style="text-align:center">${c.open?`<span class="bug-open">${c.open}</span>`:'<span style="color:var(--silver)">—</span>'}</td>
+      <td style="text-align:center">${c.fixed?`<span class="bug-fixed">${c.fixed}</span>`:'<span style="color:var(--silver)">—</span>'}</td>
+      <td><div class="pb"><div class="pbr"><div class="pbf pbf-p" style="width:${fp}%"></div><div class="pbf pbf-bug" style="width:${100-fp}%;left:${fp}%"></div></div><span class="pb-txt">${fp}% fixed</span></div></td></tr>`;
+  });
+  html+=`<tr class="tr-total bug"><td><strong>TOTAL</strong></td><td style="text-align:center"><strong>${tot}</strong></td><td style="text-align:center"><strong>${tcrit}</strong></td><td style="text-align:center"><strong>${thigh}</strong></td><td style="text-align:center"><strong>${tmed}</strong></td><td style="text-align:center"><strong>${topen}</strong></td><td style="text-align:center"><strong>${tfixed}</strong></td><td></td></tr></tbody></table>
+  <div class="legend"><span class="legend-lbl">Severity</span><div class="legend-item"><div class="ldot" style="background:var(--red)"></div>Critical</div><div class="legend-item"><div class="ldot" style="background:var(--amber)"></div>High</div><div class="legend-item"><div class="ldot" style="background:var(--blue)"></div>Medium</div><span class="legend-lbl" style="margin-left:8px">Status</span><div class="legend-item"><div class="ldot" style="background:var(--bug)"></div>Open</div><div class="legend-item"><div class="ldot" style="background:var(--pass)"></div>Fixed</div></div>`;
+  return html;
+}
+
+function buildImpSummary(){
+  const areas={};let tot=0,thigh=0,tmed=0,tlow=0,topen=0,tdone=0;
+  impRows.forEach(r=>{
+    const id=(r[0]||'').trim();if(!id.match(/^IMP-/))return;
+    const area=(r[3]||'General').trim(),pri=priKey(r[4]),done=isFixed(r[9]||'');
+    if(!areas[area])areas[area]={n:0,high:0,medium:0,low:0,open:0,done:0};
+    areas[area].n++;areas[area][pri]=areas[area][pri]||0;areas[area][pri]++;
+    done?areas[area].done++:areas[area].open++;
+    tot++;if(pri==='high')thigh++;else if(pri==='medium')tmed++;else tlow++;
+    done?tdone++:topen++;
+  });
+  document.getElementById('ik-total').textContent=tot;
+  document.getElementById('ik-high').textContent=thigh;
+  document.getElementById('ik-med').textContent=tmed;
+  document.getElementById('ik-low').textContent=tlow;
+  document.getElementById('ik-open').textContent=topen;
+  document.getElementById('ik-done').textContent=tdone;
+  document.getElementById('stb-imp').textContent=tot;
+
+  let html=`<table class="sum-t"><thead><tr class="imp-sum-head"><th>Area</th><th style="text-align:center">Total</th><th style="text-align:center">High</th><th style="text-align:center">Med</th><th style="text-align:center">Low</th><th style="text-align:center">Open</th><th style="text-align:center">Done</th><th style="min-width:140px">Completion</th></tr></thead><tbody>`;
+  Object.entries(areas).sort((a,b)=>b[1].n-a[1].n).forEach(([area,c])=>{
+    const dp=c.n>0?Math.round(c.done/c.n*100):0;
+    html+=`<tr><td><strong>${esc(area)}</strong></td><td style="text-align:center;font-weight:600">${c.n}</td>
+      <td style="text-align:center">${c.high?`<span class="pri p-high">${c.high}</span>`:'<span style="color:var(--silver)">—</span>'}</td>
+      <td style="text-align:center">${c.medium?`<span class="pri p-med">${c.medium}</span>`:'<span style="color:var(--silver)">—</span>'}</td>
+      <td style="text-align:center">${c.low?`<span class="pri p-low">${c.low}</span>`:'<span style="color:var(--silver)">—</span>'}</td>
+      <td style="text-align:center">${c.open?`<span class="imp-open">${c.open}</span>`:'<span style="color:var(--silver)">—</span>'}</td>
+      <td style="text-align:center">${c.done?`<span class="imp-done">${c.done}</span>`:'<span style="color:var(--silver)">—</span>'}</td>
+      <td><div class="pb"><div class="pbr"><div class="pbf pbf-imp" style="width:${dp}%"></div><div class="pbf pbf-n" style="width:${100-dp}%;left:${dp}%"></div></div><span class="pb-txt">${dp}% done</span></div></td></tr>`;
+  });
+  html+=`<tr class="tr-total imp"><td><strong>TOTAL</strong></td><td style="text-align:center"><strong>${tot}</strong></td><td style="text-align:center"><strong>${thigh}</strong></td><td style="text-align:center"><strong>${tmed}</strong></td><td style="text-align:center"><strong>${tlow}</strong></td><td style="text-align:center"><strong>${topen}</strong></td><td style="text-align:center"><strong>${tdone}</strong></td><td></td></tr></tbody></table>
+  <div class="legend"><span class="legend-lbl">Priority</span><div class="legend-item"><div class="ldot" style="background:var(--amber)"></div>High</div><div class="legend-item"><div class="ldot" style="background:var(--blue)"></div>Medium</div><div class="legend-item"><div class="ldot" style="background:var(--pass)"></div>Low</div><span class="legend-lbl" style="margin-left:8px">Status</span><div class="legend-item"><div class="ldot" style="background:var(--imp)"></div>Open</div><div class="legend-item"><div class="ldot" style="background:var(--pass)"></div>Done</div></div>`;
+  return html;
+}
+
+// ── LOAD STATUS GRID ───────────────────────────────────────────────────────────
 function initLoadGrid(){
-  const grid=document.getElementById('load-grid');
-  grid.innerHTML=SHEETS.map(({key,label})=>`
-    <div class="ls-row" id="ls-${key}">
-      <div class="ls-icon spinning" id="lsi-${key}"></div>
-      <span class="ls-name">${label}</span>
-      <span class="ls-msg" id="lsm-${key}">Connecting…</span>
-    </div>`).join('');
+  const g=document.getElementById('tc-load-grid');if(!g)return;
+  g.innerHTML=TC_SHEETS.map(({key,label})=>`<div class="ls-row"><div class="ls-icon spinning" id="lsi-${key}"></div><span class="ls-name">${label}</span><span class="ls-msg" id="lsm-${key}">Connecting…</span></div>`).join('');
 }
 function setLS(key,state,msg){
-  const icon=document.getElementById('lsi-'+key);
-  const msgEl=document.getElementById('lsm-'+key);
-  if(icon){icon.className='ls-icon '+(state==='ok'?'ok':state==='err'?'err':'spinning');icon.textContent=state==='ok'?'✓':state==='err'?'✗':'';}
-  if(msgEl){msgEl.textContent=msg;msgEl.className='ls-msg'+(state==='err'?' error':'');}
+  const ic=document.getElementById('lsi-'+key),mg=document.getElementById('lsm-'+key);
+  if(ic){ic.className='ls-icon '+(state==='ok'?'ok':state==='err'?'err':'spinning');ic.textContent=state==='ok'?'✓':state==='err'?'✗':'';}
+  if(mg){mg.textContent=msg;mg.className='ls-msg'+(state==='err'?' error':'');}
 }
-function setSyncState(s,l){
-  document.getElementById('sync-dot').className='dot '+s;
-  document.getElementById('sync-lbl').textContent=l;
-}
+function setSyncState(s,l){document.getElementById('sync-dot').className='dot '+s;document.getElementById('sync-lbl').textContent=l;}
 
 // ── MAIN LOAD ──────────────────────────────────────────────────────────────────
 async function loadAll(){
   setSyncState('loading','Loading…');
   initLoadGrid();
-  document.getElementById('init-spinner').style.display='flex';
 
-  // Fetch all sheets in parallel
-  const results=await Promise.allSettled(
-    SHEETS.map(({key,gid,name})=>fetchSheet(gid,name).then(rows=>({key,rows})))
+  // Fetch all TC sheets in parallel
+  const tcResults = await Promise.allSettled(
+    TC_SHEETS.map(({key,gid,name})=>fetchSheet(gid,name,r=>(r[0]||'').trim()==='Test ID').then(rows=>({key,rows})))
   );
-
-  let anyOk=false, anyErr=false;
-  results.forEach((res,i)=>{
-    const {key}=SHEETS[i];
+  tcResults.forEach((res,i)=>{
+    const {key}=TC_SHEETS[i];
     if(res.status==='fulfilled'){
-      data[key]=res.value.rows;
-      setLS(key,'ok',res.value.rows.length+' TCs');
-      anyOk=true;
-
-      // Render table
-      const {html,count}=buildTable(data[key],key);
-      const wrap=document.getElementById('wrap-'+key);
-      if(wrap)wrap.innerHTML=html;
-      const badge=document.getElementById('tb-'+key);
-      if(badge)badge.textContent=count;
-      const cnt=document.getElementById('c-'+key);
-      if(cnt)cnt.textContent=count+' test cases';
-      applyFilter(key);
+      tcData[key]=res.value.rows;
+      setLS(key,'ok',res.value.rows.filter(r=>(r[0]||'').match(/^TC-/)).length+' TCs');
+      const {html,count}=buildTCTable(tcData[key],key);
+      const w=document.getElementById('wrap-'+key);if(w)w.innerHTML=html;
+      const b=document.getElementById('tb-'+key);if(b)b.textContent=count;
+      const c=document.getElementById('c-'+key);if(c)c.textContent=count+' test cases';
+      applyTCFilter(key);
     } else {
-      data[key]=[];
-      setLS(key,'err','Failed: '+res.reason.message.split('|')[0].trim());
-      anyErr=true;
+      tcData[key]=[];
+      setLS(key,'err',res.reason.message.split('|')[0].slice(0,60));
     }
   });
 
-  document.getElementById('init-spinner').style.display='none';
-
-  if(anyOk){
-    const sumHtml=buildSummary();
-    document.getElementById('sum-area').innerHTML=`<div class="load-grid" id="load-grid"></div>${sumHtml}`;
-    // Re-render load grid inside summary with final states
-    initLoadGrid();
-    results.forEach((res,i)=>{
-      const {key,label}=SHEETS[i];
-      if(res.status==='fulfilled') setLS(key,'ok',(data[key]||[]).length+' TCs');
-      else setLS(key,'err','Failed');
-    });
-    document.getElementById('sum-ts').textContent='Updated '+new Date().toLocaleTimeString();
+  // Fetch Bugs sheet
+  try{
+    const bugRaw=await fetchSheet('','Bugs',r=>(r[0]||'').trim()==='ID');
+    bugRows=bugRaw.filter(r=>(r[0]||'').trim().match(/^BUG-/));
+    document.getElementById('bug-sum-body').innerHTML=buildBugSummary();
+    document.getElementById('bug-sum-ts').textContent='Updated '+new Date().toLocaleTimeString();
+    const {html:bh,count:bc}=buildBugTable(bugRows);
+    const bw=document.getElementById('wrap-bug-all');if(bw)bw.innerHTML=bh;
+    const bb=document.getElementById('tb-bug-all');if(bb)bb.textContent=bc;
+    const bc2=document.getElementById('c-bug-all');if(bc2)bc2.textContent=bc+' bugs';
+    applyBugFilter();
+  }catch(e){
+    document.getElementById('bug-sum-body').innerHTML=`<div class="err-box"><h3>Could not load Bugs sheet</h3><pre>${esc(e.message)}</pre></div>`;
   }
 
-  document.getElementById('last-sync').textContent='Synced '+new Date().toLocaleTimeString();
-  setSyncState(anyErr&&!anyOk?'error':anyErr?'loading':'live', anyErr&&!anyOk?'Error':anyErr?'Partial':'Live');
+  // Fetch Improvements sheet
+  try{
+    const impRaw=await fetchSheet('','Improvements',r=>(r[0]||'').trim()==='ID');
+    impRows=impRaw.filter(r=>(r[0]||'').trim().match(/^IMP-/));
+    document.getElementById('imp-sum-body').innerHTML=buildImpSummary();
+    document.getElementById('imp-sum-ts').textContent='Updated '+new Date().toLocaleTimeString();
+    const {html:ih,count:ic}=buildImpTable(impRows);
+    const iw=document.getElementById('wrap-imp-all');if(iw)iw.innerHTML=ih;
+    const ib=document.getElementById('tb-imp-all');if(ib)ib.textContent=ic;
+    const ic2=document.getElementById('c-imp-all');if(ic2)ic2.textContent=ic+' items';
+    applyImpFilter();
+  }catch(e){
+    document.getElementById('imp-sum-body').innerHTML=`<div class="err-box"><h3>Could not load Improvements sheet</h3><pre>${esc(e.message)}</pre></div>`;
+  }
+
+  // Render TC summary last (so counts are right)
+  document.getElementById('tc-sum-body').innerHTML=buildTCSummary();
+  document.getElementById('tc-sum-ts').textContent='Updated '+new Date().toLocaleTimeString();
+
+  const now=new Date();
+  document.getElementById('last-sync').textContent='Synced '+now.toLocaleTimeString();
+  const anyErr=tcResults.some(r=>r.status==='rejected');
+  setSyncState(anyErr?'loading':'live', anyErr?'Partial':'Live');
 }
 
 loadAll();
